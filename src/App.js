@@ -1,10 +1,10 @@
 import React from "react"
 // import styled from "styled-components"
 
-// https://stackoverflow.com/a/39914235
-function sleep(forMs) {
-	return new Promise(resolve => setTimeout(resolve, forMs))
-}
+// // https://stackoverflow.com/a/39914235
+// function sleep(forMs) {
+// 	return new Promise(resolve => setTimeout(resolve, forMs))
+// }
 
 const CONTENT_WIDTH_PX = 768
 
@@ -37,7 +37,7 @@ function removeAll(element) {
 //
 // ["Hello, world!"] -> ["Hello,"]
 //
-async function computeLine(element, wordArr) {
+function computeLine(element, wordArr) {
 	const lineArr = []
 
 	element.append(document.createElement("br"))
@@ -46,7 +46,6 @@ async function computeLine(element, wordArr) {
 
 	element.appendChild(document.createTextNode(""))
 	for (let x = 0; x < wordArr.length - 1; x++) {
-		await sleep(100)
 		element.lastChild.nodeValue += " " + wordArr[x]
 		const currentHeight = element.getBoundingClientRect().height
 		if (currentHeight / initialHeight > 1) {
@@ -63,7 +62,7 @@ async function computeLine(element, wordArr) {
 //
 // ["Hello, world!"] -> [["Hello,"], ["world!"]]
 //
-async function computeLines(element, str) {
+function computeLines(element, str) {
 	let linesArr = []
 
 	const wordArr = wordBreaker(str)
@@ -71,7 +70,7 @@ async function computeLines(element, str) {
 	let lineArr = []
 	for (let wcount = 0; wcount < wordArr.length - 1; wcount += lineArr.length) {
 		removeAll(element)
-		lineArr = await computeLine(element, wordArr.slice(wcount))
+		lineArr = computeLine(element, wordArr.slice(wcount))
 		linesArr.push(lineArr)
 	}
 
@@ -95,18 +94,9 @@ export default function App() {
 
 	useRequestAnimationFrame(
 		React.useCallback(() => {
-			// measureElement = document.getElementById("measuerer")
-			// const t = Date.now()
-			// const linesArr = computeLines(measureElement, inputString)
-			// console.log(Date.now() - t)
-			// setLines(linesArr)
-
 			measureElement = document.getElementById("measuerer")
-			async function handleAsync() {
-				const linesArr = await computeLines(measureElement, inputString)
-				setLines(linesArr)
-			}
-			handleAsync()
+			const linesArr = computeLines(measureElement, inputString)
+			setLines(linesArr)
 		}, []),
 	)
 
