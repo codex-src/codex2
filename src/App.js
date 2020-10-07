@@ -22,10 +22,10 @@ const InsetPadding = styled.div`
 `
 
 const Cursor = styled.span`
-	display: inline-block;
-	/* width: 4px; */
-	height: 100%;
-	border-right: 2px solid black;
+	position: absolute;
+	top: 1px;
+	bottom: 1px;
+	border-right: 2px solid hsl(195, 100%, 45%);
 `
 
 export default function App() {
@@ -38,8 +38,7 @@ export default function App() {
 					{/* prettier-ignore */}
 					<div style={{ position: "relative" }}>
 						Lorem ipsum dolor
-						{/* <Cursor mode="line" />{" "} */}
-						<span style={{ position: "absolute", height: "100%", borderRight: "2px solid hsl(195, 100%, 45%)" }} />
+						<Cursor />
 						&nbsp;sit amet.
 					</div>
 
