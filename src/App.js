@@ -13,7 +13,7 @@ const CONTENT_WIDTH_PX = 768
 let measureElement = null
 
 const rawStr =
-	"Culpa in veniam in sint reprehenderit sunt. Incididunt magna proident consequat et est consectetur aute excepteur eiusmod laborum qui. Lorem fugiat enim minim deserunt aliqua duis aliquip exercitation minim esse. Non et adipisicing magna nulla magna veniam reprehenderit in. Sint proident deserunt quis veniam Lorem duis esse elit nostrud ad culpa. Aliqua velit tempor labore mollit tempor."
+	"Occaecat ad officia ullamco occaecat do dolor sit enim culpa eiusmod ipsum. Culpa anim pariatur labore ullamco irure. Excepteur consectetur aliqua voluptate magna officia ad elit proident cillum. Proident nostrud ex ex sit reprehenderit. Et nostrud ea occaecat aute occaecat irure culpa tempor amet Lorem non irure. Do sit pariatur duis officia fugiat incididunt nostrud qui quis pariatur esse occaecat. Cillum aliquip cupidatat occaecat cillum minim laborum non aliqua exercitation sunt ad mollit pariatur ea."
 
 // Ex:
 //
@@ -80,52 +80,28 @@ function computeLines(element, str) {
 
 // --------------------
 
-// function useRequestAnimationFrame(callback) {
-// 	React.useLayoutEffect(() => {
-// 		const id = window.requestAnimationFrame(callback)
-// 		return () => {
-// 			window.cancelAnimationFrame(id)
-// 		}
-// 	}, [callback])
-// }
-
 export default function App() {
 	const [value, setValue] = React.useState(rawStr)
-	const [debouncedValue, setDebouncedValue] = React.useState("")
 
 	const [lines, setLines] = React.useState(null)
-
-	React.useEffect(() => {
-		const id = setTimeout(() => {
-			setDebouncedValue(value)
-		}, 100)
-		return () => {
-			clearTimeout(id)
-		}
-	}, [value])
 
 	React.useLayoutEffect(() => {
 		const id = window.requestAnimationFrame(() => {
 			measureElement = document.getElementById("measuerer")
-			const linesArr = computeLines(measureElement, debouncedValue)
+			const linesArr = computeLines(measureElement, value)
 			setLines(linesArr)
 		})
 		return () => {
 			window.cancelAnimationFrame(id)
 		}
-	}, [debouncedValue])
+	}, [value])
 
 	return (
 		<>
 			<div
 				id="measuerer"
 				style={{
-					// visibility: "hidden",
 					position: "absolute",
-					// top: -1e4,
-					// right: "auto",
-					// bottom: "auto",
-					// left: -1e4,
 					width: CONTENT_WIDTH_PX,
 					outline: "1px solid hsl(200, 100%, 90%)",
 					userSelect: "none",
@@ -145,7 +121,7 @@ export default function App() {
 								type="text"
 								style={{
 									width: "100%",
-									height: 104,
+									height: 128,
 								}}
 								value={value}
 								onChange={e => {
@@ -158,9 +134,17 @@ export default function App() {
 						<div style={{ outline: "1px solid hsl(200, 100%, 90%)" }}>
 							{lines &&
 								lines.map((each, x) => (
-									<p key={x} style={{ outline: "1px solid hsl(200, 100%, 90%)" }}>
+									<div key={x} style={{ position: "relative" }}>
+										<div
+											style={{
+												position: "absolute",
+												width: "100%",
+												height: "100%",
+												outline: "1px solid hsl(0, 100%, 90%)",
+											}}
+										/>
 										{each}
-									</p>
+									</div>
 								))}
 						</div>
 					</article>
