@@ -84,6 +84,12 @@ export default function App() {
 
 	React.useLayoutEffect(() => {
 		const id = window.requestAnimationFrame(() => {
+			// measureElement = document.getElementById("measuerer")
+			// const t = Date.now()
+			// const linesArr = computeLines(measureElement, inputString)
+			// console.log(Date.now() - t)
+			// setLines(linesArr)
+
 			measureElement = document.getElementById("measuerer")
 			async function handleAsync() {
 				const linesArr = await computeLines(measureElement, inputString)
@@ -94,12 +100,6 @@ export default function App() {
 		return () => {
 			window.cancelAnimationFrame(id)
 		}
-
-		// measureElement = document.getElementById("measuerer")
-		// const t = Date.now()
-		// const linesArr = computeLines(measureElement, inputString)
-		// console.log(Date.now() - t)
-		// setLines(linesArr)
 	}, [])
 
 	return (
@@ -107,11 +107,15 @@ export default function App() {
 			<div
 				id="measuerer"
 				style={{
+					// visibility: "hidden",
 					position: "absolute",
-					top: 0,
-					left: 0,
+					// top: -1e4,
+					// right: "auto",
+					// bottom: "auto",
+					// left: -1e4,
 					width: CONTENT_WIDTH_PX,
 					outline: "1px solid hsl(200, 100%, 90%)",
+					userSelect: "none",
 				}}
 			/>
 			<div
