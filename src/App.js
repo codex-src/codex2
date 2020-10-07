@@ -1,12 +1,19 @@
 import React from "react"
 import styled from "styled-components"
 
-const SelectionWrapper = styled.div`
+const Relative = styled.div`
+	position: relative;
+`
+
+const AbsoluteSelectionWrapper = styled.div`
+	position: absolute;
 	pointer-events: none;
 	user-select: none;
 `
-
-const Selection = styled.span`
+const HiddenSelection = styled.span`
+	visibility: hidden;
+`
+const ActiveSelection = styled.span`
 	display: inline-block;
 	background-color: hsl(195, 100%, 90%);
 	border-top-left-radius: ${props => (!props.topLeft && !props.left ? 0 : "6px")};
@@ -28,53 +35,53 @@ export default function App() {
 				<article>
 					{/**/}
 
-					<div style={{ position: "relative" }}>
-						<SelectionWrapper style={{ position: "absolute" }}>
-							<span style={{ visibility: "hidden" }}>Occaecat ad&nbsp;</span>
-							<Selection topLeft topRight bottomRight>
+					<Relative>
+						<AbsoluteSelectionWrapper>
+							<HiddenSelection>Occaecat ad&nbsp;</HiddenSelection>
+							<ActiveSelection topLeft topRight bottomRight>
 								officia ullamco occaecat do dolor sit enim culpa eiusmod ipsum. Culpa anim pariatur labore&nbsp;
-							</Selection>
-						</SelectionWrapper>
+							</ActiveSelection>
+						</AbsoluteSelectionWrapper>
 						Occaecat ad officia ullamco occaecat do dolor sit enim culpa eiusmod ipsum. Culpa anim pariatur labore&nbsp;
-					</div>
-					<div style={{ position: "relative" }}>
-						<SelectionWrapper style={{ position: "absolute" }}>
-							<Selection topLeft>
+					</Relative>
+					<Relative>
+						<AbsoluteSelectionWrapper>
+							<ActiveSelection topLeft>
 								ullamco irure. Excepteur consectetur aliqua voluptate magna officia ad elit proident cillum.
 								Proident&nbsp;
-							</Selection>
-						</SelectionWrapper>
+							</ActiveSelection>
+						</AbsoluteSelectionWrapper>
 						ullamco irure. Excepteur consectetur aliqua voluptate magna officia ad elit proident cillum. Proident&nbsp;
-					</div>
-					<div style={{ position: "relative" }}>
-						<SelectionWrapper style={{ position: "absolute" }}>
-							<Selection topRight>
+					</Relative>
+					<Relative>
+						<AbsoluteSelectionWrapper>
+							<ActiveSelection topRight>
 								nostrud ex ex sit reprehenderit. Et ngure culpa tempor amet Lorem non irure. Do sit pariatur duis
 								officia&nbsp;
-							</Selection>
-						</SelectionWrapper>
+							</ActiveSelection>
+						</AbsoluteSelectionWrapper>
 						nostrud ex ex sit reprehenderit. Et ngure culpa tempor amet Lorem non irure. Do sit pariatur duis
 						officia&nbsp;
-					</div>
-					<div style={{ position: "relative" }}>
-						<SelectionWrapper style={{ position: "absolute" }}>
-							<Selection right>
+					</Relative>
+					<Relative>
+						<AbsoluteSelectionWrapper>
+							<ActiveSelection right>
 								fugiat incididunt nostrud qui quis pariatur esse occaecat. Cillum aliquip cupidatat occaecat cillum
 								minim&nbsp;
-							</Selection>
-						</SelectionWrapper>
+							</ActiveSelection>
+						</AbsoluteSelectionWrapper>
 						fugiat incididunt nostrud qui quis pariatur esse occaecat. Cillum aliquip cupidatat occaecat cillum
 						minim&nbsp;
-					</div>
-					<div style={{ position: "relative" }}>
-						<SelectionWrapper style={{ position: "absolute" }}>
-							<Selection bottomLeft bottomRight>
+					</Relative>
+					<Relative>
+						<AbsoluteSelectionWrapper>
+							<ActiveSelection bottomLeft bottomRight>
 								laborum non aliqua exercitation sunt ad mollit&nbsp;
-							</Selection>
-							<span style={{ visibility: "hidden" }}>pariatur ea.&nbsp;</span>
-						</SelectionWrapper>
+							</ActiveSelection>
+							<HiddenSelection>pariatur ea.&nbsp;</HiddenSelection>
+						</AbsoluteSelectionWrapper>
 						laborum non aliqua exercitation sunt ad mollit pariatur ea.&nbsp;
-					</div>
+					</Relative>
 
 					{/**/}
 				</article>
