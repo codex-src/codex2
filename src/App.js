@@ -12,7 +12,7 @@ const CONTENT_WIDTH_PX = 768
 
 let measureElement = null
 
-const inputString =
+const rawStr =
 	"Culpa in veniam in sint reprehenderit sunt. Incididunt magna proident consequat et est consectetur aute excepteur eiusmod laborum qui. Lorem fugiat enim minim deserunt aliqua duis aliquip exercitation minim esse. Non et adipisicing magna nulla magna veniam reprehenderit in. Sint proident deserunt quis veniam Lorem duis esse elit nostrud ad culpa. Aliqua velit tempor labore mollit tempor."
 
 // Ex:
@@ -45,7 +45,7 @@ function computeLine(element, wordArr) {
 	removeAll(element)
 
 	element.appendChild(document.createTextNode(""))
-	for (let x = 0; x < wordArr.length - 1; x++) {
+	for (let x = 0; x < wordArr.length; x++) {
 		element.lastChild.nodeValue += " " + wordArr[x]
 		const currentHeight = element.getBoundingClientRect().height
 		if (currentHeight / initialHeight > 1) {
@@ -68,7 +68,7 @@ function computeLines(element, str) {
 	const wordArr = wordBreaker(str)
 
 	let lineArr = []
-	for (let wcount = 0; wcount < wordArr.length - 1; wcount += lineArr.length) {
+	for (let wcount = 0; wcount < wordArr.length; wcount += lineArr.length) {
 		removeAll(element)
 		lineArr = computeLine(element, wordArr.slice(wcount))
 		linesArr.push(lineArr)
@@ -80,25 +80,40 @@ function computeLines(element, str) {
 
 // --------------------
 
-function useRequestAnimationFrame(callback) {
+// function useRequestAnimationFrame(callback) {
+// 	React.useLayoutEffect(() => {
+// 		const id = window.requestAnimationFrame(callback)
+// 		return () => {
+// 			window.cancelAnimationFrame(id)
+// 		}
+// 	}, [callback])
+// }
+
+export default function App() {
+	const [value, setValue] = React.useState(rawStr)
+	const [debouncedValue, setDebouncedValue] = React.useState("")
+
+	const [lines, setLines] = React.useState(null)
+
+	React.useEffect(() => {
+		const id = setTimeout(() => {
+			setDebouncedValue(value)
+		}, 100)
+		return () => {
+			clearTimeout(id)
+		}
+	}, [value])
+
 	React.useLayoutEffect(() => {
-		const id = window.requestAnimationFrame(callback)
+		const id = window.requestAnimationFrame(() => {
+			measureElement = document.getElementById("measuerer")
+			const linesArr = computeLines(measureElement, debouncedValue)
+			setLines(linesArr)
+		})
 		return () => {
 			window.cancelAnimationFrame(id)
 		}
-	}, [callback])
-}
-
-export default function App() {
-	const [lines, setLines] = React.useState(null)
-
-	useRequestAnimationFrame(
-		React.useCallback(() => {
-			measureElement = document.getElementById("measuerer")
-			const linesArr = computeLines(measureElement, inputString)
-			setLines(linesArr)
-		}, []),
-	)
+	}, [debouncedValue])
 
 	return (
 		<>
@@ -124,24 +139,19 @@ export default function App() {
 				}}
 			>
 				<div style={{ padding: "96px 24px" }}>
-					<article
-						style={{
-							width: "100%",
-							maxWidth: CONTENT_WIDTH_PX + "px",
-						}}
-					>
-						<div
-							style={{
-								// position: "absolute",
-								// top: 0,
-								// right: 0,
-								// bottom: "auto",
-								// left: 0,
-								width: CONTENT_WIDTH_PX,
-								outline: "1px solid hsl(200, 100%, 90%)",
-							}}
-						>
-							{inputString}
+					<article style={{ width: CONTENT_WIDTH_PX }}>
+						<div style={{ outline: "1px solid hsl(200, 100%, 90%)" }}>
+							<textarea
+								type="text"
+								style={{
+									width: "100%",
+									height: 104,
+								}}
+								value={value}
+								onChange={e => {
+									setValue(e.target.value)
+								}}
+							/>
 						</div>
 
 						<br />
