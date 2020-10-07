@@ -1,29 +1,12 @@
 import React from "react"
-import styled from "styled-components"
+// import styled from "styled-components"
 
 // https://stackoverflow.com/a/39914235
 function sleep(forMs) {
 	return new Promise(resolve => setTimeout(resolve, forMs))
 }
 
-// --------------------
-
 const CONTENT_WIDTH_PX = 768
-
-const Center = styled.div`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-`
-
-const PaddingInset = styled.div`
-	padding: 96px 24px;
-`
-
-const Document = styled.div`
-	width: 100%;
-	max-width: ${CONTENT_WIDTH_PX}px;
-`
 
 // --------------------
 
@@ -40,19 +23,14 @@ function wordBreaker(str) {
 	return str.split(" ")
 }
 
-// Iteratively removes all nested nodes from an element.
+// Ex:
+//
+// <div><br /></div> -> <div></div>
+//
 function removeAll(element) {
 	while (element.lastChild) {
 		element.lastChild.remove()
 	}
-}
-
-// Ex:
-//
-// <div></div> -> <div><br /></div>
-//
-function appendBrElement(element) {
-	element.append(document.createElement("br"))
 }
 
 // Ex:
@@ -62,7 +40,7 @@ function appendBrElement(element) {
 async function computeLine(element, wordArr) {
 	const lineArr = []
 
-	appendBrElement(element)
+	element.append(document.createElement("br"))
 	const initialHeight = element.getBoundingClientRect().height
 	removeAll(element)
 
@@ -77,6 +55,7 @@ async function computeLine(element, wordArr) {
 		lineArr.push(wordArr[x])
 	}
 
+	removeAll(element)
 	return lineArr
 }
 
@@ -90,9 +69,9 @@ async function computeLines(element, str) {
 	const wordArr = wordBreaker(str)
 
 	let lineArr = []
-	for (let count = 0; count < wordArr.length - 1; count += lineArr.length) {
+	for (let wcount = 0; wcount < wordArr.length - 1; wcount += lineArr.length) {
 		removeAll(element)
-		lineArr = await computeLine(element, wordArr.slice(count))
+		lineArr = await computeLine(element, wordArr.slice(wcount))
 		linesArr.push(lineArr)
 	}
 
@@ -103,12 +82,24 @@ async function computeLines(element, str) {
 export default function App() {
 	const [lines, setLines] = React.useState(null)
 
-	React.useEffect(() => {
-		measureElement = document.getElementById("measuerer")
-		async function handleAsync() {
-			setLines(await computeLines(measureElement, inputString))
+	React.useLayoutEffect(() => {
+		const id = window.requestAnimationFrame(() => {
+			measureElement = document.getElementById("measuerer")
+			async function handleAsync() {
+				const linesArr = await computeLines(measureElement, inputString)
+				setLines(linesArr)
+			}
+			handleAsync()
+		})
+		return () => {
+			window.cancelAnimationFrame(id)
 		}
-		handleAsync()
+
+		// measureElement = document.getElementById("measuerer")
+		// const t = Date.now()
+		// const linesArr = computeLines(measureElement, inputString)
+		// console.log(Date.now() - t)
+		// setLines(linesArr)
 	}, [])
 
 	return (
@@ -123,9 +114,20 @@ export default function App() {
 					outline: "1px solid hsl(200, 100%, 90%)",
 				}}
 			/>
-			<Center>
-				<PaddingInset>
-					<Document style={{ position: "relative" }}>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "row",
+					justifyContent: "center",
+				}}
+			>
+				<div style={{ padding: "96px 24px" }}>
+					<article
+						style={{
+							width: "100%",
+							maxWidth: CONTENT_WIDTH_PX + "px",
+						}}
+					>
 						<div
 							style={{
 								// position: "absolute",
@@ -149,9 +151,9 @@ export default function App() {
 									</p>
 								))}
 						</div>
-					</Document>
-				</PaddingInset>
-			</Center>
+					</article>
+				</div>
+			</div>
 		</>
 	)
 }
