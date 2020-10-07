@@ -8,7 +8,11 @@ const SelectionWrapper = styled.div`
 
 const Selection = styled.span`
 	display: inline-block;
-	background-color: hsla(200, 100%, 50%, 0.25);
+	background-color: hsl(195, 100%, 90%);
+	border-top-left-radius: ${props => (!props.topLeft && !props.left ? 0 : "6px")};
+	border-top-right-radius: ${props => (!props.topRight && !props.right ? 0 : "6px")};
+	border-bottom-left-radius: ${props => (!props.bottomLeft && !props.left ? 0 : "6px")};
+	border-bottom-right-radius: ${props => (!props.bottomRight && !props.right ? 0 : "6px")};
 `
 
 export default function App() {
@@ -27,7 +31,7 @@ export default function App() {
 					<div style={{ position: "relative" }}>
 						<SelectionWrapper style={{ position: "absolute" }}>
 							<span style={{ visibility: "hidden" }}>Occaecat ad&nbsp;</span>
-							<Selection>
+							<Selection topLeft topRight bottomRight>
 								officia ullamco occaecat do dolor sit enim culpa eiusmod ipsum. Culpa anim pariatur labore&nbsp;
 							</Selection>
 						</SelectionWrapper>
@@ -35,7 +39,7 @@ export default function App() {
 					</div>
 					<div style={{ position: "relative" }}>
 						<SelectionWrapper style={{ position: "absolute" }}>
-							<Selection>
+							<Selection topLeft>
 								ullamco irure. Excepteur consectetur aliqua voluptate magna officia ad elit proident cillum.
 								Proident&nbsp;
 							</Selection>
@@ -44,7 +48,7 @@ export default function App() {
 					</div>
 					<div style={{ position: "relative" }}>
 						<SelectionWrapper style={{ position: "absolute" }}>
-							<Selection>
+							<Selection topRight>
 								nostrud ex ex sit reprehenderit. Et ngure culpa tempor amet Lorem non irure. Do sit pariatur duis
 								officia&nbsp;
 							</Selection>
@@ -54,7 +58,7 @@ export default function App() {
 					</div>
 					<div style={{ position: "relative" }}>
 						<SelectionWrapper style={{ position: "absolute" }}>
-							<Selection>
+							<Selection right>
 								fugiat incididunt nostrud qui quis pariatur esse occaecat. Cillum aliquip cupidatat occaecat cillum
 								minim&nbsp;
 							</Selection>
@@ -64,7 +68,9 @@ export default function App() {
 					</div>
 					<div style={{ position: "relative" }}>
 						<SelectionWrapper style={{ position: "absolute" }}>
-							<Selection>laborum non aliqua exercitation sunt ad mollit&nbsp;</Selection>
+							<Selection bottomLeft bottomRight>
+								laborum non aliqua exercitation sunt ad mollit&nbsp;
+							</Selection>
 							<span style={{ visibility: "hidden" }}>pariatur ea.&nbsp;</span>
 						</SelectionWrapper>
 						laborum non aliqua exercitation sunt ad mollit pariatur ea.&nbsp;
