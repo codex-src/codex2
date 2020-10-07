@@ -40,9 +40,9 @@ export default function App() {
 								width: "60%",
 								height: "100%",
 								backgroundColor: "hsl(195, 100%, 90%)",
-								borderTopLeftRadius: 6,
-								borderTopRightRadius: 6,
-								borderBottomRightRadius: 6,
+								borderTopLeftRadius: 5,
+								borderTopRightRadius: 5,
+								borderBottomRightRadius: 5,
 							}}
 						/>
 					</div>
@@ -80,8 +80,8 @@ export default function App() {
 										width: 28,
 										height: "100%",
 										backgroundColor: "hsl(0, 0%, 100%)",
-										borderTopLeftRadius: 6,
-										borderBottomLeftRadius: 6,
+										borderTopLeftRadius: 5,
+										borderBottomLeftRadius: 5,
 									}}
 								/>
 							</div>
@@ -107,9 +107,9 @@ export default function App() {
 								width: "60%",
 								height: "100%",
 								backgroundColor: "hsl(195, 100%, 90%)",
-								borderTopRightRadius: 6,
-								borderBottomLeftRadius: 6,
-								borderBottomRightRadius: 6,
+								borderTopRightRadius: 5,
+								borderBottomLeftRadius: 5,
+								borderBottomRightRadius: 5,
 							}}
 						/>
 					</div>
