@@ -79,11 +79,22 @@ async function computeLines(element, str) {
 	return linesArr.map(each => each.join(" "))
 }
 
+// --------------------
+
+function useRequestAnimationFrame(callback) {
+	React.useLayoutEffect(() => {
+		const id = window.requestAnimationFrame(callback)
+		return () => {
+			window.cancelAnimationFrame(id)
+		}
+	}, [callback])
+}
+
 export default function App() {
 	const [lines, setLines] = React.useState(null)
 
-	React.useLayoutEffect(() => {
-		const id = window.requestAnimationFrame(() => {
+	useRequestAnimationFrame(
+		React.useCallback(() => {
 			// measureElement = document.getElementById("measuerer")
 			// const t = Date.now()
 			// const linesArr = computeLines(measureElement, inputString)
@@ -96,11 +107,8 @@ export default function App() {
 				setLines(linesArr)
 			}
 			handleAsync()
-		})
-		return () => {
-			window.cancelAnimationFrame(id)
-		}
-	}, [])
+		}, []),
+	)
 
 	return (
 		<>
