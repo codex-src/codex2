@@ -17,34 +17,39 @@ const Center = styled.div`
 	flex-direction: row;
 	justify-content: center;
 `
-const InsetPadding = styled.div`
+const Content = styled.div`
 	padding: 96px 24px;
+	width: 100%;
+	max-width: 768px;
 `
 
+const Relative = styled.div`
+	position: relative;
+`
 const Cursor = styled.span`
 	position: absolute;
-	top: 1px;
-	bottom: 1px;
+	top: 0;
+	bottom: 0;
 	border-right: 2px solid hsl(195, 100%, 45%);
 `
 
 export default function App() {
 	return (
 		<Center>
-			<InsetPadding style={{ width: "100%", maxWidth: 768 }}>
+			<Content>
 				<article>
 					{/**/}
 
 					{/* prettier-ignore */}
-					<div style={{ position: "relative" }}>
+					<Relative>
 						Lorem ipsum dolor
-						<Cursor />
-						&nbsp;sit amet.
-					</div>
+						<Cursor />{" "}
+						sit amet.
+					</Relative>
 
 					{/**/}
 				</article>
-			</InsetPadding>
+			</Content>
 		</Center>
 	)
 }
