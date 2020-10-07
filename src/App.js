@@ -20,17 +20,27 @@ const Relative = styled.div`
 const RoundedSelection = styled.span`
 	display: inline-block;
 	background-color: ${props => (!props.active ? "hsl(0, 0%, 92.5%)" : "hsl(195, 100%, 92.5%)")};
-	border-top-left-radius: ${props => (!props.rounded.includes("tl") && !props.rounded.includes("l") ? 0 : "2px")};
-	border-top-right-radius: ${props => (!props.rounded.includes("tr") && !props.rounded.includes("r") ? 0 : "2px")};
-	border-bottom-left-radius: ${props => (!props.rounded.includes("bl") && !props.rounded.includes("l") ? 0 : "2px")};
-	border-bottom-right-radius: ${props => (!props.rounded.includes("br") && !props.rounded.includes("r") ? 0 : "2px")};
+	border-top-left-radius: ${props => (!hasOrIs(props.rounded, "tl") && !hasOrIs(props.rounded, "l") ? 0 : "2px")};
+	border-top-right-radius: ${props => (!hasOrIs(props.rounded, "tr") && !hasOrIs(props.rounded, "r") ? 0 : "2px")};
+	border-bottom-left-radius: ${props => (!hasOrIs(props.rounded, "bl") && !hasOrIs(props.rounded, "l") ? 0 : "2px")};
+	border-bottom-right-radius: ${props => (!hasOrIs(props.rounded, "br") && !hasOrIs(props.rounded, "r") ? 0 : "2px")};
 `
 const Cursor = styled.span`
+	margin-left: -1px;
 	position: absolute;
 	top: 0;
 	bottom: 0;
 	border-right: ${props => (!props.active ? "none" : "2px solid hsl(195, 100%, 45%)")};
 `
+
+function hasOrIs(arrOrStr, str) {
+	// Array:
+	if (Array.isArray(arrOrStr)) {
+		return arrOrStr.indexOf(str) >= 0
+	}
+	// Non-array:
+	return arrOrStr === str
+}
 
 export default function App() {
 	return (
@@ -39,11 +49,13 @@ export default function App() {
 				<article>
 					{/**/}
 
-					{/* prettier-ignore */}
 					<Relative>
-						Lorem ipsum <RoundedSelection active rounded={["l", "r"]}>dolor</RoundedSelection>
-						<Cursor active />{" "}
-						sit amet.
+						Lorem ipsum&nbsp;
+						<RoundedSelection active rounded={["l", "r"]}>
+							dolor sit&nbsp;
+						</RoundedSelection>
+						<Cursor active />
+						amet.
 					</Relative>
 
 					{/**/}
