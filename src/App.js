@@ -19,6 +19,8 @@ const AbsoluteCaret = styled.span`
 	height: 100%;
 	border-right: ${rem(2)} solid var(--caret-color);
 	border-radius: 9999px;
+
+	transition: transform 100ms cubic-bezier(0, 0.75, 0.25, 1);
 `
 
 // Ex:
@@ -150,7 +152,7 @@ export default function App() {
 
 						<br />
 						<Relative style={{ height: 28.5 }}>
-							<AbsoluteCaret style={{ left: coords }} />
+							<AbsoluteCaret style={{ transform: `translateX(${coords}px)` }} />
 							{str}
 						</Relative>
 
