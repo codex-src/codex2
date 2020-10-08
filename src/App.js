@@ -3,12 +3,23 @@
 import React from "react"
 import styled from "styled-components"
 
+// Converts px to rem.
+//
+// Ex:
+//
+// rem(16) -> "1rem"
+//
+function rem(px) {
+	const n = px / 16
+	return n + "rem"
+}
+
 const Center = styled.div`
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 `
-const Content = styled.div`
+const Container = styled.div`
 	padding: 96px 24px;
 	width: 100%;
 	max-width: 768px;
@@ -20,17 +31,17 @@ const Relative = styled.div`
 const RoundedSelection = styled.span`
 	display: inline-block;
 	background-color: ${props => (!props.active ? "hsl(0, 0%, 92.5%)" : "hsl(195, 100%, 92.5%)")};
-	border-top-left-radius: ${props => (!hasOrIs(props.rounded, "tl") && !hasOrIs(props.rounded, "l") ? 0 : "2px")};
-	border-top-right-radius: ${props => (!hasOrIs(props.rounded, "tr") && !hasOrIs(props.rounded, "r") ? 0 : "2px")};
-	border-bottom-left-radius: ${props => (!hasOrIs(props.rounded, "bl") && !hasOrIs(props.rounded, "l") ? 0 : "2px")};
-	border-bottom-right-radius: ${props => (!hasOrIs(props.rounded, "br") && !hasOrIs(props.rounded, "r") ? 0 : "2px")};
+	border-top-left-radius: ${props => (!hasOrIs(props.rounded, "tl") && !hasOrIs(props.rounded, "l") ? 0 : rem(3))};
+	border-top-right-radius: ${props => (!hasOrIs(props.rounded, "tr") && !hasOrIs(props.rounded, "r") ? 0 : rem(3))};
+	border-bottom-left-radius: ${props => (!hasOrIs(props.rounded, "bl") && !hasOrIs(props.rounded, "l") ? 0 : rem(3))};
+	border-bottom-right-radius: ${props => (!hasOrIs(props.rounded, "br") && !hasOrIs(props.rounded, "r") ? 0 : rem(3))};
 `
 const Cursor = styled.span`
-	margin-left: -1px;
+	margin-left: ${rem(-1.5)};
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	border-right: ${props => (!props.active ? "none" : "2px solid hsl(195, 100%, 45%)")};
+	border-right: ${props => (!props.active ? "none" : `${rem(3)} solid hsl(195, 100%, 50%)`)};
 `
 
 function hasOrIs(arrOrStr, str) {
@@ -45,8 +56,8 @@ function hasOrIs(arrOrStr, str) {
 export default function App() {
 	return (
 		<Center>
-			<Content>
-				<article>
+			<Container>
+				<article style={{ fontSize: 18 }}>
 					{/**/}
 
 					<Relative>
@@ -60,7 +71,7 @@ export default function App() {
 
 					{/**/}
 				</article>
-			</Content>
+			</Container>
 		</Center>
 	)
 }
