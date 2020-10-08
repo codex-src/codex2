@@ -92,23 +92,8 @@ export default function App() {
 
 						{/* Inputs */}
 						<div style={{ display: "flex" }}>
-							<Input
-								type="text"
-								value={str}
-								style={{ width: "50%" }}
-								onChange={e => {
-									setStr(e.target.value)
-								}}
-							/>
-							<Input
-								type="number"
-								value={13}
-								style={{ width: "50%" }}
-								onChange={e => {
-									// Cast as a number:
-									setPos(+e.target.value)
-								}}
-							/>
+							<Input type="text" value={str} style={{ width: "50%" }} onChange={e => setStr(e.target.value)} />
+							<Input type="number" value={pos} style={{ width: "50%" }} onChange={e => setPos(+e.target.value)} />
 						</div>
 
 						<br />
@@ -120,6 +105,9 @@ export default function App() {
 								{str.slice(pos)}
 							</span>
 						</Relative>
+
+						{/* <br />
+						<pre style={{ fontSize: 14 }}>{JSON.stringify({ str, pos }, null, 2)}</pre> */}
 
 						{/**/}
 					</article>
