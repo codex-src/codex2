@@ -62,7 +62,7 @@ export default function App() {
 	const articleRef = React.useRef()
 
 	const [str, setStr] = React.useState("Hello, world!")
-	const [pos, setPos] = React.useState(13)
+	const [pos, setPos] = React.useState(str.length)
 	const [coords, setCoords] = React.useState(0)
 
 	React.useLayoutEffect(() => {
@@ -119,7 +119,7 @@ export default function App() {
 							if (e.key === "ArrowLeft") {
 								setPos(pos - 1 < 0 ? str.length : pos - 1)
 							} else if (e.key === "ArrowRight") {
-								setPos(pos + 1 <= 13 ? pos + 1 : 0)
+								setPos(pos + 1 <= str.length ? pos + 1 : 0)
 							}
 						}}
 						tabIndex={0}
