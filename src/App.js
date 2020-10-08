@@ -70,6 +70,7 @@ const Cursor = styled.span`
 					${CursorBlink} 900ms step-end infinite
 			  `};
 	border-right: ${props => (!props.active ? "none" : `${rem(2)} solid hsl(195, 100%, 45%)`)};
+	z-index: 10;
 `
 
 export default function App() {
@@ -81,25 +82,44 @@ export default function App() {
 
 					<Relative style={{ height: 28 }}>
 						<TransparentText>
+							Do elit ut id aute duis do sit velit quis ea elit.&nbsp;
+							{/* <Cursor active blink={false} /> */}
 							<SelectionText left right>
-								Do elit ut id aute duis do sit velit quis ea elit.
+								Esse officia voluptate sit eu amet duis&nbsp;
 							</SelectionText>
-							&nbsp;Esse officia voluptate sit eu amet duis&nbsp;
 						</TransparentText>
-						<Absolute>
-							<TransparentText>
-								Do elit ut id aute duis do sit velit quis ea elit.
-								<Cursor active blink /> Esse officia voluptate sit eu amet duis&nbsp;
-							</TransparentText>
-						</Absolute>
 						<Absolute>
 							Do elit ut id aute duis do sit velit quis ea elit. Esse officia voluptate sit eu amet duis&nbsp;
 						</Absolute>
 					</Relative>
 
 					{/**/}
-					{/* <Line>aliquip nulla sint proident qui. Et aliqua ex qui nisi nulla adipisicing est culpa esse&nbsp;</Line>
-					<Line>mollit ad consectetur aliqua ex.</Line> */}
+					<Relative style={{ height: 28 }}>
+						<Absolute>
+							<TransparentText>
+								<SelectionText topLeft bottomRight>
+									aliquip nulla sint proident qui. Et aliqua ex qui nisi nulla adipisicing est culpa esse&nbsp;
+								</SelectionText>
+							</TransparentText>
+						</Absolute>
+						<Absolute>
+							aliquip nulla sint proident qui. Et aliqua ex qui nisi nulla adipisicing est culpa esse&nbsp;
+						</Absolute>
+					</Relative>
+
+					{/**/}
+					<Relative style={{ height: 28 }}>
+						<TransparentText>
+							<SelectionText bottomLeft bottomRight>
+								mollit ad consectetur
+								<Cursor active blink={false} />
+							</SelectionText>
+							&nbsp;aliqua ex.
+						</TransparentText>
+						<Absolute>mollit ad consectetur aliqua ex.</Absolute>
+					</Relative>
+
+					{/**/}
 
 					{/* <div
 						style={{
