@@ -18,12 +18,12 @@ const Input = styled.input`
 	}
 `
 
-const Caret = styled.span`
+// border-right: ${props => (!props.active ? "none" : `${rem(2)} solid var(--caret-color)`)};
+const AbsoluteCaret = styled.span`
 	margin-left: rem(-1);
 	position: absolute;
-	/* height: 100%; */
-	height: ${28.5}px;
-	border-right: ${props => (!props.active ? "none" : `${rem(2)} solid var(--caret-color)`)};
+	height: 100%;
+	border-right: ${rem(2)} solid var(--caret-color);
 	border-radius: 9999;
 `
 
@@ -50,25 +50,38 @@ function applyStyleMapToElement(styleMap, dstElement) {
 	}
 }
 
+// Ex:
+//
+// <div><br /></div> -> <div></div>
+//
+function clearElement(element) {
+	while (element.lastChild) {
+		element.lastChild.remove()
+	}
+}
+
 export default function App() {
 	const measureRef = React.useRef()
 	const articleRef = React.useRef()
 
-	const [str, setStr] = React.useState(
-		"Voluptate nisi ullamco occaecat ex ullamco irure mollit laborum eiusmod do non officia dolor consequat. Labore eu exercitation minim fugiat. Minim et exercitation cupidatat sint quis enim non. Culpa consectetur quis consectetur nulla anim qui qui adipisicing fugiat.",
-	)
+	const [str, setStr] = React.useState("Hello, world!")
 	const [pos, setPos] = React.useState(13)
+	const [coords, setCoords] = React.useState(0)
 
-	// Propagates articleRef styles to measureRef.
 	React.useLayoutEffect(() => {
-		const id = window.requestAnimationFrame(() => {
-			const styleMap = getStyleMapFromElement(articleRef.current)
-			applyStyleMapToElement(styleMap, measureRef.current)
-		})
-		return () => {
-			window.cancelAnimationFrame(id)
-		}
+		const styleMap = getStyleMapFromElement(articleRef.current)
+		applyStyleMapToElement(styleMap, measureRef.current)
 	}, [])
+
+	// console.log(str.slice(0, pos), "\n", str.slice(pos))
+	const measureCaretCoords = React.useCallback(() => {
+		clearElement(measureRef.current)
+		measureRef.current.appendChild(document.createTextNode(str.slice(0, pos)))
+		const clientRect = measureRef.current.getBoundingClientRect()
+		setCoords(clientRect.right)
+	}, [str, pos])
+
+	React.useLayoutEffect(measureCaretCoords, [measureCaretCoords, pos])
 
 	return (
 		<>
@@ -81,11 +94,8 @@ export default function App() {
 				`}
 			</style>
 
-			{/* prettier-ignore */}
 			<Absolute top left>
-				<div ref={measureRef}>
-					{str}
-				</div>
+				<div ref={measureRef} style={{ outline: "1px solid red" }} />
 			</Absolute>
 
 			<Center>
@@ -100,17 +110,13 @@ export default function App() {
 						</div>
 
 						<br />
-						<Relative>
-							<Absolute>{str}</Absolute>
-							<span style={{ color: "transparent", pointerEvents: "none", userSelect: "none" }}>
-								{str.slice(0, pos)}
-								<Caret active />
-								{str.slice(pos)}
-							</span>
+						<Relative style={{ height: 28.5 }}>
+							<AbsoluteCaret style={{ left: coords }} />
+							{str}
 						</Relative>
 
-						{/* <br />
-						<pre style={{ fontSize: 14 }}>{JSON.stringify({ str, pos }, null, 2)}</pre> */}
+						<br />
+						<pre style={{ fontSize: 14 }}>{JSON.stringify({ str, pos, coords }, null, 2)}</pre>
 
 						{/**/}
 					</article>
