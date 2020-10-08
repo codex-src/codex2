@@ -59,20 +59,33 @@ const data = {
 
 export default function App() {
 	return (
-		<Center>
-			<Container>
-				<article style={{ fontSize: 19 }}>
-					{/**/}
+		<>
+			<style>
+				{css`
+					html {
+						--selection-color: hsla(200, 100%, 90%, 0.9);
+						--caret-color: hsl(200, 100%, 50%);
+					}
+				`}
+			</style>
+			<Center>
+				<Container>
+					<article style={{ fontSize: 19 }}>
+						{/**/}
 
-					{/* prettier-ignore */}
-					<Relative>
-						<div style={{ position: "absolute", top: 0, bottom: 0, borderRight: "2px solid red" }} />
-						{data.str}
-					</Relative>
+						{/* prettier-ignore */}
+						<Relative style={{ outline: "1px solid red" }}>
+							<Absolute style={{ position: "absolute" }}>
+								hahaha
+								<span style={{ display: "inline-block", height: 28.5, borderRight: "1px solid blue" }} />
+							</Absolute>
+							{data.str}
+						</Relative>
 
-					{/**/}
-				</article>
-			</Container>
-		</Center>
+						{/**/}
+					</article>
+				</Container>
+			</Center>
+		</>
 	)
 }
