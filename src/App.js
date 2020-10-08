@@ -22,6 +22,9 @@ const Relative = styled.div`
 const Absolute = styled.div`
 	position: absolute;
 `
+const Transparent = styled.div`
+	color: transparent;
+`
 
 // // Ex:
 // //
@@ -74,12 +77,22 @@ export default function App() {
 						{/**/}
 
 						{/* prettier-ignore */}
-						<Relative style={{ outline: "1px solid red" }}>
-							<Absolute style={{ position: "absolute" }}>
-								hahaha
-								<span style={{ display: "inline-block", height: 28.5, borderRight: "1px solid blue" }} />
+						<Relative>
+							<Absolute>
+								{data.str}
 							</Absolute>
-							{data.str}
+							<Transparent as="span" style={{ pointerEvents: "none", userSelect: "none" }}>
+								{data.str.slice(0, data.offset)}
+								<span
+									style={{
+										marginLeft: rem(-1),
+										position: "absolute",
+										height: "100%",
+										borderRight: "2px solid var(--caret-color)",
+									}}
+								/>
+								{data.str.slice(data.offset)}
+							</Transparent>
 						</Relative>
 
 						{/**/}
