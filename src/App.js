@@ -12,12 +12,6 @@ const Container = styled.div`
 	max-width: 768px;
 `
 
-const Input = styled.input`
-	&:focus {
-		outline: none;
-	}
-`
-
 // border-right: ${props => (!props.active ? "none" : `${rem(2)} solid var(--caret-color)`)};
 const AbsoluteCaret = styled.span`
 	margin-left: ${rem(-1)};
@@ -73,14 +67,7 @@ export default function App() {
 
 	React.useLayoutEffect(() => {
 		const styleMap = getStyleMapFromElement(articleRef.current)
-		applyStyleMapToElement(
-			styleMap,
-			// {
-			// 	...styleMap,
-			// 	whiteSpace: "pre-wrap", // Must use "pre-wrap" to preserve spaces
-			// },
-			measureRef.current,
-		)
+		applyStyleMapToElement(styleMap, measureRef.current)
 	}, [])
 
 	const measureCaretCoords = React.useCallback(() => {
@@ -100,6 +87,10 @@ export default function App() {
 						--selection-color: hsla(200, 100%, 90%, 0.9);
 						--caret-color: hsl(200, 100%, 50%);
 					}
+
+					.outline-none {
+						outline: none;
+					}
 				`}
 			</style>
 
@@ -111,6 +102,7 @@ export default function App() {
 				<Container>
 					<article
 						ref={articleRef}
+						className="outline-none"
 						style={{
 							whiteSpace: "pre-wrap",
 							fontSize: 19,
@@ -123,13 +115,28 @@ export default function App() {
 								setPos(range.startOffset)
 							}
 						}}
+						onKeyDown={e => {
+							if (e.key === "ArrowLeft") {
+								setPos(pos - 1 < 0 ? str.length : pos - 1)
+							} else if (e.key === "ArrowRight") {
+								setPos(pos + 1 <= 13 ? pos + 1 : 0)
+							}
+						}}
+						tabIndex={0}
 					>
 						{/**/}
 
 						{/* Inputs */}
 						<div style={{ display: "flex" }}>
-							<Input type="text" value={str} style={{ width: "50%" }} onChange={e => setStr(e.target.value)} />
-							<Input
+							<input
+								className="outline-none"
+								type="text"
+								value={str}
+								style={{ width: "50%" }}
+								onChange={e => setStr(e.target.value)}
+							/>
+							<input
+								className="outline-none"
 								type="number"
 								value={pos}
 								style={{ width: "50%" }}
