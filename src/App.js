@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 
+import styled, { keyframes } from "styled-components"
+
 import React from "react"
-import styled from "styled-components"
 
 // Converts px to rem.
 //
@@ -36,11 +37,21 @@ const RoundedSelection = styled.span`
 	border-bottom-left-radius: ${props => (!hasOrIs(props.rounded, "bl") && !hasOrIs(props.rounded, "l") ? 0 : rem(3))};
 	border-bottom-right-radius: ${props => (!hasOrIs(props.rounded, "br") && !hasOrIs(props.rounded, "r") ? 0 : rem(3))};
 `
+
+const CursorBlink = keyframes`
+  0% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+  }
+`
 const Cursor = styled.span`
 	margin-left: ${rem(-1.5)};
 	position: absolute;
 	top: 0;
 	bottom: 0;
+	animation: ${CursorBlink} 1s ease-out infinite;
 	border-right: ${props => (!props.active ? "none" : `${rem(3)} solid hsl(195, 100%, 50%)`)};
 `
 
