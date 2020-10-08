@@ -88,7 +88,8 @@ export default function App() {
 										marginLeft: rem(-1),
 										position: "absolute",
 										height: "100%",
-										borderRight: "2px solid var(--caret-color)",
+										borderRight: `${rem(2)} solid var(--caret-color)`,
+										borderRadius: 9999,
 									}}
 								/>
 								{data.str.slice(data.offset)}
