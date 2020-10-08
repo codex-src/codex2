@@ -1,16 +1,19 @@
 /* eslint-disable no-unused-vars */
 
-import React from "react"
-import styled from "styled-components"
+import styled, { css, keyframes } from "styled-components"
 
-// const Selection = styled.span`
-// 	display: inline-block;
-// 	background-color: hsl(195, 100%, 90%);
-// 	border-top-left-radius: ${props => (!props.topLeft && !props.left ? 0 : "6px")};
-// 	border-top-right-radius: ${props => (!props.topRight && !props.right ? 0 : "6px")};
-// 	border-bottom-left-radius: ${props => (!props.bottomLeft && !props.left ? 0 : "6px")};
-// 	border-bottom-right-radius: ${props => (!props.bottomRight && !props.right ? 0 : "6px")};
-// `
+import React from "react"
+
+// Converts px to rem.
+//
+// Ex:
+//
+// rem(16) -> "1rem"
+//
+function rem(px) {
+	const n = px / 16
+	return n + "rem"
+}
 
 const Center = styled.div`
 	display: flex;
@@ -32,14 +35,41 @@ const Absolute = styled.div`
 	left: 0;
 `
 
-const SelectionWrapper = styled.div`
+const TransparentText = styled.div`
 	display: inline-block;
 	color: transparent;
 	background-color: transparent;
 `
 const SelectionText = styled.span`
 	display: inline-block;
-	background-color: hsla(195, 100%, 50%, 0.25);
+	background-color: hsl(195, 100%, 90%);
+	border-top-left-radius: ${props => (!props.topLeft && !props.left ? 0 : rem(2))};
+	border-top-right-radius: ${props => (!props.topRight && !props.right ? 0 : rem(2))};
+	border-bottom-left-radius: ${props => (!props.bottomLeft && !props.left ? 0 : rem(2))};
+	border-bottom-right-radius: ${props => (!props.bottomRight && !props.right ? 0 : rem(2))};
+`
+
+// https://codepen.io/ArtemGordinsky/pen/GnLBq
+const CursorBlink = keyframes`
+  from, to {
+    opacity: 100%;
+  }
+  50% {
+    opacity: 0%;
+  }
+`
+const Cursor = styled.span`
+	margin-left: ${rem(-1)};
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	animation: ${props =>
+		!props.blink
+			? "none"
+			: css`
+					${CursorBlink} 900ms step-end infinite
+			  `};
+	border-right: ${props => (!props.active ? "none" : `${rem(2)} solid hsl(195, 100%, 45%)`)};
 `
 
 export default function App() {
@@ -47,15 +77,27 @@ export default function App() {
 		<Center>
 			<Content style={{ width: "100%", maxWidth: 768 }}>
 				<article style={{ fontSize: 19 }}>
+					{/**/}
+
 					<Relative style={{ height: 28 }}>
-						<SelectionWrapper>
-							<SelectionText>Do elit ut id aute duis do sit velit quis ea elit.</SelectionText>
+						<TransparentText>
+							<SelectionText left right>
+								Do elit ut id aute duis do sit velit quis ea elit.
+							</SelectionText>
 							&nbsp;Esse officia voluptate sit eu amet duis&nbsp;
-						</SelectionWrapper>
+						</TransparentText>
+						<Absolute>
+							<TransparentText>
+								Do elit ut id aute duis do sit velit quis ea elit.
+								<Cursor active blink /> Esse officia voluptate sit eu amet duis&nbsp;
+							</TransparentText>
+						</Absolute>
 						<Absolute>
 							Do elit ut id aute duis do sit velit quis ea elit. Esse officia voluptate sit eu amet duis&nbsp;
 						</Absolute>
 					</Relative>
+
+					{/**/}
 					{/* <Line>aliquip nulla sint proident qui. Et aliqua ex qui nisi nulla adipisicing est culpa esse&nbsp;</Line>
 					<Line>mollit ad consectetur aliqua ex.</Line> */}
 
