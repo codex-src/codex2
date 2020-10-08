@@ -21,6 +21,10 @@ const Relative = styled.div`
 `
 const Absolute = styled.div`
 	position: absolute;
+	top: ${props => (!props.top ? "auto" : 0)};
+	right: ${props => (!props.right ? "auto" : 0)};
+	bottom: ${props => (!props.bottom ? "auto" : 0)};
+	left: ${props => (!props.left ? "auto" : 0)};
 `
 const Transparent = styled.div`
 	color: transparent;
@@ -60,11 +64,42 @@ const data = {
 	offset: 7,
 }
 
+// Ex:
+//
+// <div style="font-size: 19px"> -> { fontSize: "19px" }
+//
+function getStyleMapFromElement(srcElement) {
+	const styleMap = {}
+	const keys = [...srcElement.style]
+	for (const each of keys) {
+		styleMap[each] = srcElement.style[each]
+	}
+	return styleMap
+}
+
+// Ex:
+//
+// ({ fontSize: "19px" }, <div>) -> <div style="font-size: 19px">
+//
+function applyStyleMapToElement(styleMap, dstElement) {
+	for (const each in styleMap) {
+		dstElement.style[each] = styleMap[each]
+	}
+}
+
 export default function App() {
+	const measureRef = React.useRef()
 	const articleRef = React.useRef()
 
-	React.useEffect(() => {
-		console.log(articleRef.current)
+	// Propagates articleRef styles to measureRef.
+	React.useLayoutEffect(() => {
+		const id = window.requestAnimationFrame(() => {
+			const styleMap = getStyleMapFromElement(articleRef.current)
+			applyStyleMapToElement(styleMap, measureRef.current)
+		})
+		return () => {
+			window.cancelAnimationFrame(id)
+		}
 	}, [])
 
 	return (
@@ -78,7 +113,12 @@ export default function App() {
 				`}
 			</style>
 
-			<div id="measurer">{/* TODO */}</div>
+			{/* prettier-ignore */}
+			<Absolute top left>
+				<div ref={measureRef}>
+					test
+				</div>
+			</Absolute>
 
 			<Center>
 				<Container>
