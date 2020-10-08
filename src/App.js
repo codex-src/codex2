@@ -80,44 +80,62 @@ export default function App() {
 				<article style={{ fontSize: 19 }}>
 					{/**/}
 
-					<Relative style={{ height: 28 }}>
-						<TransparentText>
-							Do elit ut id aute duis do sit velit quis ea elit.&nbsp;
-							{/* <Cursor active blink={false} /> */}
-							<SelectionText left right>
-								Esse officia voluptate sit eu amet duis&nbsp;
-							</SelectionText>
-						</TransparentText>
-						<Absolute>
-							Do elit ut id aute duis do sit velit quis ea elit. Esse officia voluptate sit eu amet duis&nbsp;
-						</Absolute>
-					</Relative>
-
-					{/**/}
-					<Relative style={{ height: 28 }}>
-						<Absolute>
+					<p>
+						<Relative style={{ height: 28 }}>
 							<TransparentText>
-								<SelectionText topLeft bottomRight>
-									aliquip nulla sint proident qui. Et aliqua ex qui nisi nulla adipisicing est culpa esse&nbsp;
+								Do elit ut id aute duis do sit velit quis ea elit.&nbsp;
+								<SelectionText left right>
+									Esse officia voluptate sit eu amet duis&nbsp;
 								</SelectionText>
 							</TransparentText>
-						</Absolute>
-						<Absolute>
-							aliquip nulla sint proident qui. Et aliqua ex qui nisi nulla adipisicing est culpa esse&nbsp;
-						</Absolute>
-					</Relative>
+							<Absolute>
+								Do elit ut id aute duis do sit velit quis ea elit. Esse officia voluptate sit eu amet duis&nbsp;
+							</Absolute>
+						</Relative>
 
-					{/**/}
-					<Relative style={{ height: 28 }}>
-						<TransparentText>
-							<SelectionText bottomLeft bottomRight>
-								mollit ad consectetur
-								<Cursor active blink={false} />
-							</SelectionText>
-							&nbsp;aliqua ex.
-						</TransparentText>
-						<Absolute>mollit ad consectetur aliqua ex.</Absolute>
-					</Relative>
+						{/**/}
+						<Relative style={{ height: 28 }}>
+							<Absolute>
+								<TransparentText>
+									<SelectionText topLeft bottomRight>
+										aliquip nulla sint proident qui. Et aliqua ex qui nisi nulla adipisicing est culpa esse&nbsp;
+									</SelectionText>
+								</TransparentText>
+							</Absolute>
+							<Absolute>
+								aliquip nulla sint proident qui. Et aliqua ex qui nisi nulla adipisicing est culpa esse&nbsp;
+							</Absolute>
+						</Relative>
+
+						{/**/}
+						<Relative style={{ height: 28 }}>
+							<TransparentText>
+								<SelectionText bottomRight>mollit ad consectetur</SelectionText>
+								&nbsp;aliqua ex.
+							</TransparentText>
+							<Absolute>mollit ad consectetur aliqua ex.</Absolute>
+						</Relative>
+					</p>
+					<p>
+						<Relative style={{ height: 28 }}>
+							<TransparentText>
+								<SelectionText>&nbsp;</SelectionText>
+							</TransparentText>
+							<Absolute>&nbsp;</Absolute>
+						</Relative>
+					</p>
+					<p>
+						<Relative style={{ height: 28 }}>
+							<TransparentText>
+								<SelectionText bottomLeft right>
+									Et dolore dolor aute velit in cillum exercitation fugiat
+									<Cursor active blink={false} />
+								</SelectionText>
+								&nbsp;et dolor aliquip.
+							</TransparentText>
+							<Absolute>Et dolore dolor aute velit in cillum exercitation fugiat et dolor aliquip.</Absolute>
+						</Relative>
+					</p>
 
 					{/**/}
 
