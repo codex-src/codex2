@@ -42,11 +42,11 @@ const TransparentText = styled.div`
 `
 const SelectionText = styled.span`
 	display: inline-block;
-	background-color: hsl(195, 100%, 90%);
-	border-top-left-radius: ${props => (!props.topLeft && !props.left ? 0 : rem(2))};
-	border-top-right-radius: ${props => (!props.topRight && !props.right ? 0 : rem(2))};
-	border-bottom-left-radius: ${props => (!props.bottomLeft && !props.left ? 0 : rem(2))};
-	border-bottom-right-radius: ${props => (!props.bottomRight && !props.right ? 0 : rem(2))};
+	background-color: hsl(195, 100%, 92.5%);
+	border-top-left-radius: ${props => (!props.topLeft && !props.left ? 0 : rem(4))};
+	border-top-right-radius: ${props => (!props.topRight && !props.right ? 0 : rem(4))};
+	border-bottom-left-radius: ${props => (!props.bottomLeft && !props.left ? 0 : rem(4))};
+	border-bottom-right-radius: ${props => (!props.bottomRight && !props.right ? 0 : rem(4))};
 `
 
 // https://codepen.io/ArtemGordinsky/pen/GnLBq
@@ -84,7 +84,13 @@ export default function App() {
 						<Relative style={{ height: 28 }}>
 							<TransparentText>
 								Do elit ut id aute duis do sit velit quis ea elit.&nbsp;
-								<SelectionText left right>
+								<span style={{ position: "absolute", transform: "translateX(-100%)" }}>
+									<div style={{ position: "absolute" }}>
+										<div style={{ width: 28, height: 28, backgroundColor: "white", borderBottomRightRadius: rem(4) }} />
+									</div>
+									<div style={{ width: 28, height: 28, backgroundColor: "hsl(195, 100%, 92.5%)" }} />
+								</span>
+								<SelectionText topLeft right>
 									Esse officia voluptate sit eu amet duis&nbsp;
 								</SelectionText>
 							</TransparentText>
@@ -230,51 +236,3 @@ export default function App() {
 		</Center>
 	)
 }
-
-// <Relative>
-// 	<AbsoluteSelectionWrapper>
-// 		<HiddenSelection>Occaecat ad&nbsp;</HiddenSelection>
-// 		<ActiveSelection topLeft topRight bottomRight>
-// 			officia ullamco occaecat do dolor sit enim culpa eiusmod ipsum. Culpa anim pariatur labore&nbsp;
-// 		</ActiveSelection>
-// 	</AbsoluteSelectionWrapper>
-// 	Occaecat ad officia ullamco occaecat do dolor sit enim culpa eiusmod ipsum. Culpa anim pariatur labore&nbsp;
-// </Relative>
-// <Relative>
-// 	<AbsoluteSelectionWrapper>
-// 		<ActiveSelection topLeft>
-// 			ullamco irure. Excepteur consectetur aliqua voluptate magna officia ad elit proident cillum.
-// 			Proident&nbsp;
-// 		</ActiveSelection>
-// 	</AbsoluteSelectionWrapper>
-// 	ullamco irure. Excepteur consectetur aliqua voluptate magna officia ad elit proident cillum. Proident&nbsp;
-// </Relative>
-// <Relative>
-// 	<AbsoluteSelectionWrapper>
-// 		<ActiveSelection topRight>
-// 			nostrud ex ex sit reprehenderit. Et ngure culpa tempor amet Lorem non irure. Do sit pariatur duis
-// 			officia&nbsp;
-// 		</ActiveSelection>
-// 	</AbsoluteSelectionWrapper>
-// 	nostrud ex ex sit reprehenderit. Et ngure culpa tempor amet Lorem non irure. Do sit pariatur duis
-// 	officia&nbsp;
-// </Relative>
-// <Relative>
-// 	<AbsoluteSelectionWrapper>
-// 		<ActiveSelection right>
-// 			fugiat incididunt nostrud qui quis pariatur esse occaecat. Cillum aliquip cupidatat occaecat cillum
-// 			minim&nbsp;
-// 		</ActiveSelection>
-// 	</AbsoluteSelectionWrapper>
-// 	fugiat incididunt nostrud qui quis pariatur esse occaecat. Cillum aliquip cupidatat occaecat cillum
-// 	minim&nbsp;
-// </Relative>
-// <Relative>
-// 	<AbsoluteSelectionWrapper>
-// 		<ActiveSelection bottomLeft bottomRight>
-// 			laborum non aliqua exercitation sunt ad mollit&nbsp;
-// 		</ActiveSelection>
-// 		<HiddenSelection>pariatur ea.&nbsp;</HiddenSelection>
-// 	</AbsoluteSelectionWrapper>
-// 	laborum non aliqua exercitation sunt ad mollit pariatur ea.&nbsp;
-// </Relative>
