@@ -61,6 +61,12 @@ const data = {
 }
 
 export default function App() {
+	const articleRef = React.useRef()
+
+	React.useEffect(() => {
+		console.log(articleRef.current)
+	}, [])
+
 	return (
 		<>
 			<style>
@@ -71,9 +77,12 @@ export default function App() {
 					}
 				`}
 			</style>
+
+			<div id="measurer">{/* TODO */}</div>
+
 			<Center>
 				<Container>
-					<article style={{ fontSize: 19 }}>
+					<article ref={articleRef} style={{ fontSize: 19 }}>
 						{/**/}
 
 						{/* prettier-ignore */}
