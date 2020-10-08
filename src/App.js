@@ -17,18 +17,49 @@ const Center = styled.div`
 	flex-direction: row;
 	justify-content: center;
 `
-const InsetPadding = styled.div`
+const Content = styled.div`
 	padding: 96px 24px;
+`
+
+const Relative = styled.div`
+	position: relative;
+`
+const Absolute = styled.div`
+	position: absolute;
+	top: 0; /* Needed */
+	right: 0;
+	bottom: 0;
+	left: 0;
+`
+
+const SelectionWrapper = styled.div`
+	display: inline-block;
+	color: transparent;
+	background-color: transparent;
+`
+const SelectionText = styled.span`
+	display: inline-block;
+	background-color: hsla(195, 100%, 50%, 0.25);
 `
 
 export default function App() {
 	return (
 		<Center>
-			<InsetPadding style={{ width: "100%", maxWidth: 768 }}>
-				<article>
-					{/**/}
+			<Content style={{ width: "100%", maxWidth: 768 }}>
+				<article style={{ fontSize: 19 }}>
+					<Relative style={{ height: 28 }}>
+						<SelectionWrapper>
+							<SelectionText>Do elit ut id aute duis do sit velit quis ea elit.</SelectionText>
+							&nbsp;Esse officia voluptate sit eu amet duis&nbsp;
+						</SelectionWrapper>
+						<Absolute>
+							Do elit ut id aute duis do sit velit quis ea elit. Esse officia voluptate sit eu amet duis&nbsp;
+						</Absolute>
+					</Relative>
+					{/* <Line>aliquip nulla sint proident qui. Et aliqua ex qui nisi nulla adipisicing est culpa esse&nbsp;</Line>
+					<Line>mollit ad consectetur aliqua ex.</Line> */}
 
-					<div
+					{/* <div
 						style={{
 							position: "relative",
 							height: 28,
@@ -112,11 +143,10 @@ export default function App() {
 								borderBottomRightRadius: 5,
 							}}
 						/>
-					</div>
-
+					</div> */}
 					{/**/}
 				</article>
-			</InsetPadding>
+			</Content>
 		</Center>
 	)
 }
