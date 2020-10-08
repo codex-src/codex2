@@ -3,17 +3,7 @@
 import styled, { css, keyframes } from "styled-components"
 
 import React from "react"
-
-// Converts px to rem.
-//
-// Ex:
-//
-// rem(16) -> "1rem"
-//
-function rem(px) {
-	const n = px / 16
-	return n + "rem"
-}
+import rem from "rem"
 
 const Center = styled.div`
 	display: flex;
@@ -29,61 +19,55 @@ const Container = styled.div`
 const Relative = styled.div`
 	position: relative;
 `
-const RoundedSelection = styled.span`
-	display: inline-block;
-	background-color: ${props => (!props.active ? "hsl(0, 0%, 92.5%)" : "hsl(195, 100%, 92.5%)")};
-	border-top-left-radius: ${props => (!hasOrIs(props.rounded, "tl") && !hasOrIs(props.rounded, "l") ? 0 : rem(2))};
-	border-top-right-radius: ${props => (!hasOrIs(props.rounded, "tr") && !hasOrIs(props.rounded, "r") ? 0 : rem(2))};
-	border-bottom-left-radius: ${props => (!hasOrIs(props.rounded, "bl") && !hasOrIs(props.rounded, "l") ? 0 : rem(2))};
-	border-bottom-right-radius: ${props => (!hasOrIs(props.rounded, "br") && !hasOrIs(props.rounded, "r") ? 0 : rem(2))};
+const Absolute = styled.div`
+	position: absolute;
 `
 
-// https://codepen.io/ArtemGordinsky/pen/GnLBq
-const CursorBlink = keyframes`
-  from, to {
-    opacity: 100%;
-  }
-  50% {
-    opacity: 0%;
-  }
-`
-const Cursor = styled.span`
+// // Ex:
+// //
+// // hasOrIs(["a", "b", "c"], "a") -> true
+// // hasOrIs("a", "a") -> true
+// //
+// function hasOrIs(arrOrStr, str) {
+// 	if (Array.isArray(arrOrStr)) {
+// 		return arrOrStr.indexOf(str) >= 0
+// 	}
+// 	return arrOrStr === str
+// }
+//
+// const RoundedSelection = styled.span`
+// 	display: inline-block;
+// 	background-color: ${props => (!props.active ? "hsl(0, 0%, 92.5%)" : "hsl(195, 100%, 92.5%)")};
+// 	border-top-left-radius: ${props => (!hasOrIs(props.rounded, "tl") && !hasOrIs(props.rounded, "l") ? 0 : rem(2))};
+// 	border-top-right-radius: ${props => (!hasOrIs(props.rounded, "tr") && !hasOrIs(props.rounded, "r") ? 0 : rem(2))};
+// 	border-bottom-left-radius: ${props => (!hasOrIs(props.rounded, "bl") && !hasOrIs(props.rounded, "l") ? 0 : rem(2))};
+// 	border-bottom-right-radius: ${props => (!hasOrIs(props.rounded, "br") && !hasOrIs(props.rounded, "r") ? 0 : rem(2))};
+// `
+
+const Caret = styled.span`
 	margin-left: ${rem(-1)};
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	animation: ${props =>
-		!props.blink
-			? "none"
-			: css`
-					${CursorBlink} 1s step-end infinite
-			  `};
 	border-right: ${props => (!props.active ? "none" : `${rem(2)} solid hsl(195, 100%, 45%)`)};
 `
 
-function hasOrIs(arrOrStr, str) {
-	// Array:
-	if (Array.isArray(arrOrStr)) {
-		return arrOrStr.indexOf(str) >= 0
-	}
-	// Non-array:
-	return arrOrStr === str
+const data = {
+	str: "Hello, world!",
+	offset: 7,
 }
 
 export default function App() {
 	return (
 		<Center>
 			<Container>
-				<article style={{ fontSize: 18 }}>
+				<article style={{ fontSize: 19 }}>
 					{/**/}
 
+					{/* prettier-ignore */}
 					<Relative>
-						Lorem ipsum&nbsp;
-						{/* <RoundedSelection active rounded={["l", "r"]}> */}
-						dolor sit&nbsp;
-						{/* </RoundedSelection> */}
-						<Cursor active blink={false} />
-						amet.
+						<div style={{ position: "absolute", top: 0, bottom: 0, borderRight: "2px solid red" }} />
+						{data.str}
 					</Relative>
 
 					{/**/}
