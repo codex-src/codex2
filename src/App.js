@@ -79,8 +79,8 @@ export default function App() {
 			<style>
 				{css`
 					html {
-						--selection-background-color: hsl(205, 100%, 92.5%);
-						--caret-color: hsl(205, 100%, 50%);
+						--selection-background-color: hsla(200, 100%, 90%, 0.9);
+						--caret-color: hsl(200, 100%, 50%);
 					}
 				`}
 			</style>
@@ -133,14 +133,13 @@ export default function App() {
 							{/**/}
 							<Relative style={{ height: 28 }}>
 								<TransparentText>
-									<SelectionText bottomRight>mollit ad consectetur</SelectionText>
+									<SelectionText bottomRight>mollit ad consectetur aliqua ex.</SelectionText>
 									<span style={{ position: "absolute" }}>
 										<div style={{ position: "absolute" }}>
 											<div style={{ width: 28, height: 28, backgroundColor: "white", borderTopLeftRadius: rem(4) }} />
 										</div>
 										<div style={{ width: 28, height: 28, backgroundColor: "var(--selection-background-color)" }} />
 									</span>
-									&nbsp;aliqua ex.
 								</TransparentText>
 								<Absolute>mollit ad consectetur aliqua ex.</Absolute>
 							</Relative>
