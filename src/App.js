@@ -60,6 +60,9 @@ function clearElement(element) {
 	}
 }
 
+// https://github.com/alextsui05/cperakun/pull/2
+// https://github.com/alextsui05/cperakun/pull/2/commits/09bd0de8f4d9778839201d85bb09f3ab18fefd68
+
 export default function App() {
 	const measureRef = React.useRef()
 	const articleRef = React.useRef()
@@ -71,10 +74,11 @@ export default function App() {
 	React.useLayoutEffect(() => {
 		const styleMap = getStyleMapFromElement(articleRef.current)
 		applyStyleMapToElement(
-			{
-				...styleMap,
-				whiteSpace: "pre-wrap", // Must use "pre-wrap" to preserve spaces
-			},
+			styleMap,
+			// {
+			// 	...styleMap,
+			// 	whiteSpace: "pre-wrap", // Must use "pre-wrap" to preserve spaces
+			// },
 			measureRef.current,
 		)
 	}, [])
@@ -105,7 +109,21 @@ export default function App() {
 
 			<Center>
 				<Container>
-					<article ref={articleRef} style={{ fontSize: 19 }}>
+					<article
+						ref={articleRef}
+						style={{
+							whiteSpace: "pre-wrap",
+							fontSize: 19,
+						}}
+						onPointerDown={e => {
+							// console.log(document.caretRangeFromPoint(e.clientX, e.clientY))
+							const range = document.caretRangeFromPoint(e.clientX, e.clientY)
+							if (range.startContainer.nodeType === Node.TEXT_NODE) {
+								// console.log(range.startContainer.nodeValue.slice(0, range.startOffset))
+								setPos(range.startOffset)
+							}
+						}}
+					>
 						{/**/}
 
 						{/* Inputs */}
