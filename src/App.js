@@ -20,11 +20,11 @@ const Input = styled.input`
 
 // border-right: ${props => (!props.active ? "none" : `${rem(2)} solid var(--caret-color)`)};
 const AbsoluteCaret = styled.span`
-	margin-left: rem(-1);
+	margin-left: ${rem(-1)};
 	position: absolute;
 	height: 100%;
 	border-right: ${rem(2)} solid var(--caret-color);
-	border-radius: 9999;
+	border-radius: 9999px;
 `
 
 // Ex:
@@ -70,10 +70,15 @@ export default function App() {
 
 	React.useLayoutEffect(() => {
 		const styleMap = getStyleMapFromElement(articleRef.current)
-		applyStyleMapToElement(styleMap, measureRef.current)
+		applyStyleMapToElement(
+			{
+				...styleMap,
+				whiteSpace: "pre-wrap", // Must use "pre-wrap" to preserve spaces
+			},
+			measureRef.current,
+		)
 	}, [])
 
-	// console.log(str.slice(0, pos), "\n", str.slice(pos))
 	const measureCaretCoords = React.useCallback(() => {
 		clearElement(measureRef.current)
 		measureRef.current.appendChild(document.createTextNode(str.slice(0, pos)))
@@ -106,7 +111,16 @@ export default function App() {
 						{/* Inputs */}
 						<div style={{ display: "flex" }}>
 							<Input type="text" value={str} style={{ width: "50%" }} onChange={e => setStr(e.target.value)} />
-							<Input type="number" value={pos} style={{ width: "50%" }} onChange={e => setPos(+e.target.value)} />
+							<Input
+								type="number"
+								value={pos}
+								style={{ width: "50%" }}
+								onChange={e => {
+									const capped = Math.min(Math.max(0, +e.target.value), str.length)
+									setPos(capped)
+								}}
+								autoFocus
+							/>
 						</div>
 
 						<br />
