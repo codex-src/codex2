@@ -21,7 +21,8 @@ const Input = styled.input`
 const Caret = styled.span`
 	margin-left: rem(-1);
 	position: absolute;
-	height: 100%;
+	/* height: 100%; */
+	height: ${28.5}px;
 	border-right: ${props => (!props.active ? "none" : `${rem(2)} solid var(--caret-color)`)};
 	border-radius: 9999;
 `
@@ -53,7 +54,9 @@ export default function App() {
 	const measureRef = React.useRef()
 	const articleRef = React.useRef()
 
-	const [str, setStr] = React.useState("Hello, world!")
+	const [str, setStr] = React.useState(
+		"Voluptate nisi ullamco occaecat ex ullamco irure mollit laborum eiusmod do non officia dolor consequat. Labore eu exercitation minim fugiat. Minim et exercitation cupidatat sint quis enim non. Culpa consectetur quis consectetur nulla anim qui qui adipisicing fugiat.",
+	)
 	const [pos, setPos] = React.useState(13)
 
 	// Propagates articleRef styles to measureRef.
