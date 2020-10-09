@@ -36,19 +36,21 @@ function getKeyDownModKeys(e) {
 }
 
 const methods = state => ({
-	pointerMove({ pointer, range }) {
-		state.pointer.x = pointer.x
-		state.pointer.y = pointer.y
+	pointerMove({ coords, range }) {
+		state.pointer.x = coords.x
+		state.pointer.y = coords.y
 		// state.pointer.down = true
 
-		if (state.pointer.down) {
-			state.document.range.start = range.start
-			state.document.range.end = range.end
+		if (!state.pointer.down) {
+			// No-op
+			return
 		}
+		state.document.range.start = range.start
+		state.document.range.end = range.end
 	},
-	pointerDown({ pointer, range }) {
-		state.pointer.x = pointer.x
-		state.pointer.y = pointer.y
+	pointerDown({ coords, range }) {
+		state.pointer.x = coords.x
+		state.pointer.y = coords.y
 		state.pointer.down = true
 
 		state.document.range.start = range.start
@@ -206,28 +208,32 @@ export default function App() {
 							outline: "none",
 						}}
 						onPointerMove={e => {
-							const pointer = {
-								x: e.clientX,
-								y: e.clientY,
-							}
+							const method = dispatch.pointerMove
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
-							const range = {
-								start: caretRange.startOffset,
-								end: caretRange.endOffset,
-							}
-							dispatch.pointerMove({ pointer, range })
+							method({
+								coords: {
+									x: e.clientX,
+									y: e.clientY,
+								},
+								range: {
+									start: caretRange.startOffset,
+									end: caretRange.endOffset,
+								},
+							})
 						}}
 						onPointerDown={e => {
-							const pointer = {
-								x: e.clientX,
-								y: e.clientY,
-							}
+							const method = dispatch.pointerDown
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
-							const range = {
-								start: caretRange.startOffset,
-								end: caretRange.endOffset,
-							}
-							dispatch.pointerDown({ pointer, range })
+							method({
+								coords: {
+									x: e.clientX,
+									y: e.clientY,
+								},
+								range: {
+									start: caretRange.startOffset,
+									end: caretRange.endOffset,
+								},
+							})
 						}}
 						onPointerUp={e => {
 							dispatch.pointerUp()
