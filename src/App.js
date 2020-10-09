@@ -23,6 +23,9 @@ const AbsoluteCaret = styled.span`
 	height: 100%;
 	border-right: ${rem(2)} solid var(--caret-color);
 	border-radius: 9999px;
+
+	pointer-events: none;
+	user-select: none;
 `
 
 function getKeyDownModKeys(e) {
@@ -36,6 +39,10 @@ function getKeyDownModKeys(e) {
 }
 
 const methods = state => ({
+	resize(layout) {
+		state.layout = layout
+	},
+
 	pointerMove({ coords, range }) {
 		state.pointer.x = coords.x
 		state.pointer.y = coords.y
@@ -44,9 +51,15 @@ const methods = state => ({
 		if (!state.pointer.down) {
 			// No-op
 			return
+		} else if (coords.y < state.layout.top || coords.y > state.layout.bottom) {
+			// No-op
+			return
+		} else if (coords.x < state.layout.left || coords.x > state.layout.right) {
+			// No-op
+			return
 		}
 		state.document.range.start = range.start
-		state.document.range.end = range.end
+		// state.document.range.end = range.end
 	},
 	pointerDown({ coords, range }) {
 		state.pointer.x = coords.x
@@ -124,6 +137,12 @@ const methods = state => ({
 })
 
 const initialState = {
+	layout: {
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	},
 	pointer: {
 		x: 0,
 		y: 0,
@@ -159,6 +178,24 @@ export default function App() {
 
 	const [state, dispatch] = useMethods(methods, initialState)
 
+	React.useLayoutEffect(() => {
+		const handler = e => {
+			const clientRect = articleRef.current.getBoundingClientRect()
+			dispatch.resize({
+				top: clientRect.top,
+				right: clientRect.right,
+				bottom: clientRect.bottom,
+				left: clientRect.left,
+			})
+		}
+		handler() // Once
+		window.addEventListener("resize", handler, false)
+		return () => {
+			window.removeEventListener("resize", handler, false)
+		}
+	}, [dispatch])
+
+	// Once
 	useLayoutEffect(() => {
 		const src = articleRef.current
 		const dst = measureRef.current
@@ -167,6 +204,7 @@ export default function App() {
 		}
 	}, [])
 
+	// TODO: Move to reducer?
 	useLayoutEffect(
 		useCallback(() => {
 			clear(measureRef.current)
@@ -205,11 +243,16 @@ export default function App() {
 						ref={articleRef}
 						style={{
 							fontSize: 19,
-							outline: "none",
+							outline: "1px solid red",
+
+							// pointerEvents: "none",
+							userSelect: "none",
 						}}
 						onPointerMove={e => {
 							const method = dispatch.pointerMove
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
+							// console.log(e.clientX, e.clientY)
+							// console.log(caretRange)
 							method({
 								coords: {
 									x: e.clientX,
