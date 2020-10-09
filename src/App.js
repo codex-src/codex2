@@ -40,8 +40,11 @@ const methods = state => ({
 		state.pointer.x = Math.round(rawX)
 		state.pointer.y = Math.round(rawY)
 	},
-	pointerDown() {
+	pointerDown({ range: { start, end } }) {
 		state.pointer.down = true
+
+		state.document.range.start = start
+		state.document.range.end = end
 	},
 	pointerUp() {
 		state.pointer.down = false
@@ -98,6 +101,7 @@ const methods = state => ({
 			}
 		}
 	},
+
 	focus() {
 		state.activeElement = true
 	},
@@ -116,7 +120,6 @@ const initialState = {
 	document: {
 		content: "Hello, world!",
 		range: {
-			open: false,
 			start: 13, // FIXME
 			end: 13, // FIXME
 			coords: {
@@ -192,10 +195,16 @@ export default function App() {
 							outline: "none",
 						}}
 						onPointerMove={e => {
-							dispatch.pointerMove({ x: e.clientX, y: e.clientY })
+							dispatch.pointerMove({
+								x: e.clientX,
+								y: e.clientY,
+							})
 						}}
 						onPointerDown={e => {
-							dispatch.pointerDown()
+							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
+							const start = caretRange.startOffset
+							const end = caretRange.endOffset
+							dispatch.pointerDown({ range: { start, end } })
 						}}
 						onPointerUp={e => {
 							dispatch.pointerUp()
@@ -231,13 +240,13 @@ export default function App() {
 							{state.document.content}
 						</Relative>
 
-						<br />
-						<Unantialiased>
-							<pre style={{ fontSize: 12 }}>{JSON.stringify(state, null, 2)}</pre>
-						</Unantialiased>
-
 						{/**/}
 					</article>
+
+					<br />
+					<Unantialiased>
+						<pre style={{ fontSize: 12 }}>{JSON.stringify(state, null, 2)}</pre>
+					</Unantialiased>
 				</Content>
 			</Center>
 
