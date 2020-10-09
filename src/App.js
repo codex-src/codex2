@@ -233,13 +233,33 @@ export default function App() {
 				</div>
 			</Absolute>
 
+			{/* <Relative style={{ height: 28 }}>
+				<TransparentText>
+					Do elit ut id aute duis do sit velit quis ea elit.&nbsp;
+					<span style={{ position: "absolute", transform: "translateX(-100%)" }}>
+						<div style={{ position: "absolute" }}>
+							<div
+								style={{ width: 28, height: 28, backgroundColor: "white", borderBottomRightRadius: rem(4) }}
+							/>
+						</div>
+						<div style={{ width: 28, height: 28, backgroundColor: "var(--selection-background-color)" }} />
+					</span>
+					<SelectionText topLeft right>
+						Esse officia voluptate sit eu amet duis&nbsp;
+					</SelectionText>
+				</TransparentText>
+				<Absolute>
+					Do elit ut id aute duis do sit velit quis ea elit. Esse officia voluptate sit eu amet duis&nbsp;
+				</Absolute>
+			</Relative> */}
+
 			<Center>
 				<Content>
 					<article
 						ref={articleRef}
 						style={{
 							fontSize: 19,
-							outline: "none", // "1px solid red",
+							outline: "1px solid hsla(0, 100%, 50%, 0.1)",
 
 							// pointerEvents: "none",
 							userSelect: "none",
@@ -301,11 +321,13 @@ export default function App() {
 						{/**/}
 
 						{/* prettier-ignore */}
-						<Relative style={{ height: 28.5 }}>
+						<Relative style={{ height: rem(19 * 1.5) }}>
 							{state.activeElement && (
 								<AbsoluteCaret style={{ left: state.document.range.coords.x }} />
 							)}
-							{state.document.content}
+							<Absolute>
+								{state.document.content}
+							</Absolute>
 						</Relative>
 
 						{/**/}
