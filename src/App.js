@@ -52,108 +52,105 @@ function getKeyDownModKeys(e) {
 	return modKeys
 }
 
+const methods = state => ({
+	pointerMove({ x: rawX, y: rawY }) {
+		state.pointer.x = Math.round(rawX)
+		state.pointer.y = Math.round(rawY)
+	},
+	pointerDown() {
+		state.pointer.down = true
+	},
+	pointerUp() {
+		state.pointer.down = false
+	},
+
+	arrowUp(modKeys) {
+		// ...
+	},
+	arrowDown(modKeys) {
+		// ...
+	},
+
+	// dir=up
+	// dir=right
+	// dir=down
+	// dir=left
+	// boundary=rune
+	// boundary=word
+	// boundary=line
+	// boundary=node
+	// boundary=page
+	//
+	arrowLeft(modKeys) {
+		if (!modKeys.shiftKey) {
+			// Expand:
+			if (state.document.range.start > 0) {
+				state.document.range.start--
+				state.document.range.end--
+			}
+		} else {
+			// Move:
+			if (state.document.range.start > 0) {
+				state.document.range.start--
+			}
+		}
+	},
+	arrowRight(modKeys) {
+		if (!modKeys.shiftKey) {
+			// Expand:
+			if (state.document.range.end < state.document.content.length) {
+				state.document.range.start++
+				state.document.range.end++
+			}
+		} else {
+			// Move:
+			if (state.document.range.end < state.document.content.length) {
+				state.document.range.end++
+			}
+		}
+	},
+
+	keyDownArrowUp(modKeys) {
+		// TODO
+	},
+	keyDownArrowDown(modKeys) {
+		// TODO
+	},
+	keyDownArrowLeft(modKeys) {
+		this.arrowLeft(modKeys)
+	},
+	keyDownArrowRight(modKeys) {
+		this.arrowRight(modKeys)
+	},
+	focus() {
+		state.activeElement = true
+	},
+	blur() {
+		state.activeElement = false
+	},
+})
+
+const initialState = {
+	pointer: {
+		down: false,
+		x: 0,
+		y: 0,
+	},
+	activeElement: false,
+	document: {
+		content: "Hello, world!",
+		range: {
+			open: false,
+			start: 0,
+			end: 0,
+		},
+	},
+}
+
 export default function App() {
 	const articleRef = React.useRef(null)
 
-	const [state, dispatch] = useMethods(
-		state => ({
-			pointerMove({ x: rawX, y: rawY }) {
-				state.pointer.x = Math.round(rawX)
-				state.pointer.y = Math.round(rawY)
-			},
-			pointerDown() {
-				state.pointer.down = true
-			},
-			pointerUp() {
-				state.pointer.down = false
-			},
-
-			moveRangeLeftByRune() {
-				if (!state.activeElement) {
-					// No-op
-					return
-				}
-				if (!state.document.range.open) {
-					if (state.document.range.start) {
-						state.document.range.start--
-						state.document.range.end--
-					}
-				} else {
-					// TODO
-				}
-			},
-			moveRangeRightByRune() {
-				if (!state.activeElement) {
-					// No-op
-					return
-				}
-				if (!state.document.range.open) {
-					if (state.document.range.end < state.document.content.length) {
-						state.document.range.start++
-						state.document.range.end++
-					}
-				} else {
-					// TODO
-				}
-			},
-
-			// // dir=up
-			// // dir=right
-			// // dir=down
-			// // dir=left
-			// // boundary=rune
-			// // boundary=word
-			// // boundary=line
-			// // boundary=node
-			// // boundary=page
-			// moveRange({ dir, boundary }) {
-			// 	if (dir === "left" && boundary === "rune") {
-			// 		// ...
-			// 	} else if (dir === "right" && boundary === "rune") {
-			// 		// ...
-			// 	} else {
-			// 		throw new Error("FIXME: not implemented")
-			// 	}
-			// },
-
-			keyDownArrowUp(modKeys) {
-				// TODO
-			},
-			keyDownArrowDown(modKeys) {
-				// TODO
-			},
-			keyDownArrowLeft(modKeys) {
-				// TODO: modKeys
-				this.moveRangeLeftByRune()
-			},
-			keyDownArrowRight(modKeys) {
-				// TODO: modKeys
-				this.moveRangeRightByRune()
-			},
-			focus() {
-				state.activeElement = true
-			},
-			blur() {
-				state.activeElement = false
-			},
-		}),
-		{
-			pointer: {
-				down: false,
-				x: 0,
-				y: 0,
-			},
-			activeElement: false,
-			document: {
-				content: "Hello, world!",
-				range: {
-					open: false,
-					start: 0,
-					end: 0,
-				},
-			},
-		},
-	)
+	const [state, dispatch] = useMethods(methods, initialState)
 
 	return (
 		<Antialiased>
