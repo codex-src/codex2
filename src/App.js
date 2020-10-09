@@ -1,21 +1,10 @@
+import { Absolute, Relative } from "position"
 import { Antialiased, Unantialiased } from "Antialiasing"
+import React, { useCallback, useLayoutEffect, useRef } from "react"
+import styled, { css } from "styled-components"
 
-import React from "react"
 import rem from "rem"
-import styled from "styled-components"
 import useMethods from "use-methods"
-
-// const a = styled.div({
-// 	...flex("row"),
-// 	...justifyContent("center"),
-// })
-//
-// const b = styled.div({
-// 	...py(96),
-// 	...px(24),
-// 	...width("100%"),
-// 	...maxWidth(768),
-// })
 
 const Center = styled.div`
 	display: flex;
@@ -28,19 +17,13 @@ const Content = styled.div`
 	max-width: ${rem(768)};
 `
 
-// 	// console.log(document.caretRangeFromPoint(e.clientX, e.clientY))
-// 	const range = document.caretRangeFromPoint(e.clientX, e.clientY)
-// 	if (range.startContainer.nodeType === Node.TEXT_NODE) {
-// 		// console.log(range.startContainer.nodeValue.slice(0, range.startOffset))
-// 		setPos(range.startOffset)
-// 	}
-// }}
-// onKeyDown={e => {
-// 	if (e.key === "ArrowLeft") {
-// 		setPos(pos - 1 < 0 ? str.length : pos - 1)
-// 	} else if (e.key === "ArrowRight") {
-// 		setPos(pos + 1 <= str.length ? pos + 1 : 0)
-// 	}
+const AbsoluteCaret = styled.span`
+	margin-left: ${rem(-1)};
+	position: absolute;
+	height: 100%;
+	border-right: ${rem(2)} solid var(--caret-color);
+	border-radius: 9999px;
+`
 
 function getKeyDownModKeys(e) {
 	const modKeys = {
@@ -62,6 +45,10 @@ const methods = state => ({
 	},
 	pointerUp() {
 		state.pointer.down = false
+	},
+
+	setRangeCoords(coords) {
+		state.document.range.coords = coords
 	},
 
 	arrowUp(modKeys) {
@@ -130,20 +117,71 @@ const initialState = {
 		content: "Hello, world!",
 		range: {
 			open: false,
-			start: 0,
-			end: 0,
+			start: 13, // FIXME
+			end: 13, // FIXME
+			coords: {
+				x: 0,
+				y: 0,
+			},
 		},
 	},
 }
 
+// Ex:
+//
+// <div><br /></div> -> <div></div>
+//
+function clear(element) {
+	while (element.lastChild) {
+		element.lastChild.remove()
+	}
+}
+
 export default function App() {
-	const articleRef = React.useRef(null)
+	const articleRef = useRef(null)
+	const measureRef = useRef(null)
 
 	const [state, dispatch] = useMethods(methods, initialState)
+
+	useLayoutEffect(() => {
+		const src = articleRef.current
+		const dst = measureRef.current
+		for (const each of [...src.style]) {
+			dst.style[each] = src.style[each]
+		}
+	}, [])
+
+	useLayoutEffect(
+		useCallback(() => {
+			clear(measureRef.current)
+			const textNode = document.createTextNode(state.document.content.slice(0, state.document.range.start))
+			measureRef.current.appendChild(textNode)
+			const { top, right } = measureRef.current.getBoundingClientRect()
+			const coords = { x: right, y: top }
+			dispatch.setRangeCoords(coords)
+		}, [state, dispatch]),
+		[state.document.range.start, state.document.range.end],
+	)
 
 	return (
 		<Antialiased>
 			{/**/}
+
+			<style>
+				{css`
+					html {
+						--selection-color: hsla(200, 100%, 90%, 0.9);
+						--caret-color: hsl(200, 100%, 50%);
+					}
+				`}
+			</style>
+
+			{/* prettier-ignore */}
+			<Absolute top left style={{ outline: "1px solid red" }}>
+				<div ref={measureRef}>
+					{/* ... */}
+				</div>
+			</Absolute>
 
 			<Center>
 				<Content>
@@ -169,15 +207,16 @@ export default function App() {
 							dispatch.focus()
 						}}
 						onKeyDown={e => {
-							const fn = {
-								ArrowUp: dispatch.keyDownArrowUp,
+							// prettier-ignore
+							const method = {
+								ArrowUp:    dispatch.keyDownArrowUp,
 								ArrowRight: dispatch.keyDownArrowRight,
-								ArrowDown: dispatch.keyDownArrowDown,
-								ArrowLeft: dispatch.keyDownArrowLeft,
+								ArrowDown:  dispatch.keyDownArrowDown,
+								ArrowLeft:  dispatch.keyDownArrowLeft,
 							}[e.key]
-							if (fn) {
+							if (method) {
 								const modKeys = getKeyDownModKeys(e)
-								fn(modKeys)
+								method(modKeys)
 							}
 						}}
 						tabIndex={0}
@@ -185,9 +224,12 @@ export default function App() {
 						{/**/}
 
 						{/* prettier-ignore */}
-						<p>
+						<Relative style={{ height: 28.5 }}>
+							{state.activeElement && (
+								<AbsoluteCaret style={{ left: state.document.range.coords.x }} />
+							)}
 							{state.document.content}
-						</p>
+						</Relative>
 
 						<br />
 						<Unantialiased>
