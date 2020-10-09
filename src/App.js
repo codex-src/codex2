@@ -69,6 +69,13 @@ const methods = state => ({
 		state.document.range.__computed = computed
 	},
 
+	focus() {
+		state.document.activeElement = true
+	},
+	blur() {
+		state.document.activeElement = false
+	},
+
 	// dir=up
 	// dir=right
 	// dir=down
@@ -85,18 +92,46 @@ const methods = state => ({
 	keyDownArrowDown(modKeys) {
 		// TODO
 	},
+	// keyDownArrowLeft(modKeys) {
+	// 	// state.document.range.direction = "start"
+	// 	if (state.document.range.start > 0) {
+	// 		state.document.range.start--
+	// 		state.document.range.end--
+	// 	}
+	// },
+	// keyDownArrowRight(modKeys) {
+	// 	// state.document.range.direction = "start"
+	// 	if (state.document.range.end < state.document.content.length) {
+	// 		state.document.range.start++
+	// 		state.document.range.end++
+	// 	}
+	// },
 	keyDownArrowLeft(modKeys) {
-		// state.document.range.direction = "start"
-		if (state.document.range.start > 0) {
-			state.document.range.start--
-			state.document.range.end--
+		if (!modKeys.shiftKey) {
+			// state.document.range.direction = "none"
+			if (state.document.range.start > 0) {
+				state.document.range.start--
+				state.document.range.end--
+			}
+		} else {
+			// state.document.range.direction = "backwards"
+			if (state.document.range.start > 0) {
+				state.document.range.start--
+			}
 		}
 	},
 	keyDownArrowRight(modKeys) {
-		// state.document.range.direction = "start"
-		if (state.document.range.end < state.document.content.length) {
-			state.document.range.start++
-			state.document.range.end++
+		if (!modKeys.shiftKey) {
+			// state.document.range.direction = "none"
+			if (state.document.range.end < state.document.content.length) {
+				state.document.range.start++
+				state.document.range.end++
+			}
+		} else {
+			// state.document.range.direction = "forwards"
+			if (state.document.range.end < state.document.content.length) {
+				state.document.range.end++
+			}
 		}
 	},
 
@@ -109,13 +144,6 @@ const methods = state => ({
 	// keyDownCharacter(character) {
 	// 	// ...
 	// },
-
-	focus() {
-		state.activeElement = true
-	},
-	blur() {
-		state.activeElement = false
-	},
 })
 
 const initialState = {
@@ -130,14 +158,13 @@ const initialState = {
 		y: 0,
 		down: false,
 	},
-	activeElement: false,
 	document: {
+		activeElement: false,
 		content: "Hello, world!",
 		range: {
-			direction: "start",
-			start: "Hello, ".length, // TODO
-			end: "Hello, world".length, // TODO
-			// __computed: 0,
+			// direction: "start", // TODO
+			start: 0,
+			end: 0,
 			__computed: {
 				left: 0,
 				right: 0,
@@ -145,23 +172,6 @@ const initialState = {
 		},
 	},
 }
-
-// const document = {
-// 	range: {
-// 		start: {
-// 			id: "",
-// 			offset: 0,
-// 		},
-// 		end: {
-// 			id: "",
-// 			offset: 0,
-// 		},
-// 		computed: {
-// 			x1: 0,
-// 			x2: 0,
-// 		},
-// 	},
-// }
 
 // Ex:
 //
@@ -193,11 +203,12 @@ export default function App() {
 	React.useLayoutEffect(() => {
 		const handler = e => {
 			const clientRect = articleRef.current.getBoundingClientRect()
+			// prettier-ignore
 			dispatch.resize({
-				top: clientRect.top,
-				right: clientRect.right,
+				top:    clientRect.top,
+				right:  clientRect.right,
 				bottom: clientRect.bottom,
-				left: clientRect.left,
+				left:   clientRect.left,
 			})
 		}
 		handler() // Once
@@ -247,7 +258,9 @@ export default function App() {
 				{css`
 					html {
 						--selection-color: hsla(200, 100%, 90%, 0.9);
-						--caret-color: hsl(200, 100%, 50%);
+						--inactive-selection-color: hsla(200, 0%, 90%, 0.75);
+						--caret-color: hsla(200, 100%, 50%, 1);
+						--inactive-caret-color: hsla(200, 0%, 90%, 0);
 					}
 				`}
 			</style>
@@ -283,7 +296,7 @@ export default function App() {
 						style={{
 							whiteSpace: "pre-wrap",
 							fontSize: 19,
-							// outline: "1px solid hsla(0, 100%, 50%, 0.25)",
+							outline: "none", // "1px solid hsla(0, 100%, 50%, 0.25)",
 
 							// pointerEvents: "none",
 							userSelect: "none",
@@ -342,42 +355,47 @@ export default function App() {
 					>
 						{/**/}
 
+						{/* TODO: Add active / inactive states */}
+
 						{/* prettier-ignore */}
-						{/* <AbsoluteCaret style={{ left: state.document.range.__computed, zIndex: 20 }} /> */}
 						<Relative style={{ height: rem(19 * 1.5) }}>
-							{/* {state.activeElement && ( */}
-							<div
-								style={{
-									marginLeft: rem(-1),
-									position: "absolute",
-									top: 0,
-									right: "auto",
-									bottom: 0,
-									left: state.document.range.__computed.end,
-									borderRight: `${rem(2)} solid var(--caret-color)`,
-									borderRadius: 9999,
-									zIndex: 20,
-									pointerEvents: "none",
-									userSelect: "none",
-								}}
-							/>
-							{/* )} */}
-							<Absolute style={{ zIndex: 10 }}>{state.document.content}</Absolute>
-							<div
-								style={{
-									position: "absolute",
-									top: 0,
-									right: "auto",
-									bottom: 0,
-									left: state.document.range.__computed.start,
-									width: state.document.range.__computed.end - state.document.range.__computed.start,
-									backgroundColor: "var(--selection-color)",
-									borderRadius: rem(3),
-									zIndex: 0,
-									pointerEvents: "none",
-									userSelect: "none",
-								}}
-							/>
+							{state.document.activeElement && (
+								<div
+									style={{
+										marginLeft: rem(-1),
+										position: "absolute",
+										top: 0,
+										right: "auto",
+										bottom: 0,
+										left: state.document.range.__computed.end,
+										borderRight: `${rem(2)} solid var(--caret-color)`,
+										borderRadius: 9999,
+										zIndex: 20,
+										pointerEvents: "none",
+										userSelect: "none",
+									}}
+								/>
+							)}
+							<Absolute style={{ zIndex: 10 }}>
+								{state.document.content}
+							</Absolute>
+							{state.document.range.start !== state.document.range.end && (
+								<div
+									style={{
+										position: "absolute",
+										top: 0,
+										right: "auto",
+										bottom: 0,
+										left: state.document.range.__computed.start,
+										width: state.document.range.__computed.end - state.document.range.__computed.start,
+										backgroundColor: "var(--selection-color)",
+										borderRadius: rem(2),
+										zIndex: 0,
+										pointerEvents: "none",
+										userSelect: "none",
+									}}
+								/>
+							)}
 						</Relative>
 
 						{/**/}
