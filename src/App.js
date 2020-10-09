@@ -67,6 +67,55 @@ export default function App() {
 			pointerUp() {
 				state.pointer.down = false
 			},
+
+			moveRangeLeftByRune() {
+				if (!state.activeElement) {
+					// No-op
+					return
+				}
+				if (!state.document.range.open) {
+					if (state.document.range.start) {
+						state.document.range.start--
+						state.document.range.end--
+					}
+				} else {
+					// TODO
+				}
+			},
+			moveRangeRightByRune() {
+				if (!state.activeElement) {
+					// No-op
+					return
+				}
+				if (!state.document.range.open) {
+					if (state.document.range.end < state.document.content.length) {
+						state.document.range.start++
+						state.document.range.end++
+					}
+				} else {
+					// TODO
+				}
+			},
+
+			// // dir=up
+			// // dir=right
+			// // dir=down
+			// // dir=left
+			// // boundary=rune
+			// // boundary=word
+			// // boundary=line
+			// // boundary=node
+			// // boundary=page
+			// moveRange({ dir, boundary }) {
+			// 	if (dir === "left" && boundary === "rune") {
+			// 		// ...
+			// 	} else if (dir === "right" && boundary === "rune") {
+			// 		// ...
+			// 	} else {
+			// 		throw new Error("FIXME: not implemented")
+			// 	}
+			// },
+
 			keyDownArrowUp(modKeys) {
 				// TODO
 			},
@@ -74,18 +123,12 @@ export default function App() {
 				// TODO
 			},
 			keyDownArrowLeft(modKeys) {
-				if (!state.activeElement) {
-					// No-op
-					return
-				}
-				state.document.pos1--
+				// TODO: modKeys
+				this.moveRangeLeftByRune()
 			},
 			keyDownArrowRight(modKeys) {
-				if (!state.activeElement) {
-					// No-op
-					return
-				}
-				state.document.pos2++
+				// TODO: modKeys
+				this.moveRangeRightByRune()
 			},
 			focus() {
 				state.activeElement = true
@@ -102,9 +145,12 @@ export default function App() {
 			},
 			activeElement: false,
 			document: {
-				data: "Hello, world!",
-				pos1: 0,
-				pos2: 0,
+				content: "Hello, world!",
+				range: {
+					open: false,
+					start: 0,
+					end: 0,
+				},
 			},
 		},
 	)
@@ -154,7 +200,7 @@ export default function App() {
 
 						{/* prettier-ignore */}
 						<p>
-							{state.document.data}
+							{state.document.content}
 						</p>
 
 						<br />
