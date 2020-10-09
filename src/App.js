@@ -42,10 +42,15 @@ const Content = styled.div`
 // 		setPos(pos + 1 <= str.length ? pos + 1 : 0)
 // 	}
 
-const SHIFT = "shift"
-const CTRL = "ctrl"
-const ALT = "alt"
-const META = "meta"
+function getKeyDownModKeys(e) {
+	const modKeys = {
+		shiftKey: e.shiftKey,
+		ctrlKey: e.ctrlKey,
+		altKey: e.altKey,
+		metaKey: e.metaKey,
+	}
+	return modKeys
+}
 
 export default function App() {
 	const articleRef = React.useRef(null)
@@ -62,29 +67,17 @@ export default function App() {
 			pointerUp() {
 				state.pointer.down = false
 			},
-			keyDown(type) {
-				const match = {
-					[SHIFT]: true,
-					[CTRL]: true,
-					[ALT]: true,
-					[META]: true,
-				}[type]
-				if (!match) {
-					throw new Error(`keyDown: no such type; type=${type}`)
-				}
-				state.keyboard[type] = true
+			keyDownArrowUp(modKeys) {
+				console.log("keyDownArrowUp", modKeys)
 			},
-			keyUp(type) {
-				const match = {
-					[SHIFT]: true,
-					[CTRL]: true,
-					[ALT]: true,
-					[META]: true,
-				}[type]
-				if (!match) {
-					throw new Error(`keyUp: no such type; type=${type}`)
-				}
-				state.keyboard[type] = false
+			keyDownArrowRight(modKeys) {
+				console.log("keyDownArrowRight", modKeys)
+			},
+			keyDownArrowDown(modKeys) {
+				console.log("keyDownArrowDown", modKeys)
+			},
+			keyDownArrowLeft(modKeys) {
+				console.log("keyDownArrowLeft", modKeys)
 			},
 			focus() {
 				state.activeElement = true
@@ -99,13 +92,6 @@ export default function App() {
 				x: 0,
 				y: 0,
 			},
-			keyboard: {
-				[SHIFT]: false,
-				[CTRL]: false,
-				[ALT]: false,
-				[META]: false,
-			},
-			activeElement: false,
 			document: {
 				content: "Hello, world!",
 				selection: {
@@ -142,25 +128,15 @@ export default function App() {
 							dispatch.pointerUp()
 						}}
 						onKeyDown={e => {
-							const type = {
-								Shift: SHIFT,
-								Control: CTRL,
-								Alt: ALT,
-								Meta: META,
+							const fn = {
+								ArrowUp: dispatch.keyDownArrowUp,
+								ArrowRight: dispatch.keyDownArrowRight,
+								ArrowDown: dispatch.keyDownArrowDown,
+								ArrowLeft: dispatch.keyDownArrowLeft,
 							}[e.key]
-							if (type) {
-								dispatch.keyDown(type)
-							}
-						}}
-						onKeyUp={e => {
-							const type = {
-								Shift: SHIFT,
-								Control: CTRL,
-								Alt: ALT,
-								Meta: META,
-							}[e.key]
-							if (type) {
-								dispatch.keyUp(type)
+							if (fn) {
+								const modKeys = getKeyDownModKeys(e)
+								fn(modKeys)
 							}
 						}}
 						tabIndex={0}
