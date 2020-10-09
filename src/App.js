@@ -68,16 +68,24 @@ export default function App() {
 				state.pointer.down = false
 			},
 			keyDownArrowUp(modKeys) {
-				console.log("keyDownArrowUp", modKeys)
-			},
-			keyDownArrowRight(modKeys) {
-				console.log("keyDownArrowRight", modKeys)
+				// TODO
 			},
 			keyDownArrowDown(modKeys) {
-				console.log("keyDownArrowDown", modKeys)
+				// TODO
 			},
 			keyDownArrowLeft(modKeys) {
-				console.log("keyDownArrowLeft", modKeys)
+				if (!state.activeElement) {
+					// No-op
+					return
+				}
+				state.document.pos1--
+			},
+			keyDownArrowRight(modKeys) {
+				if (!state.activeElement) {
+					// No-op
+					return
+				}
+				state.document.pos2++
 			},
 			focus() {
 				state.activeElement = true
@@ -92,16 +100,11 @@ export default function App() {
 				x: 0,
 				y: 0,
 			},
+			activeElement: false,
 			document: {
-				content: "Hello, world!",
-				selection: {
-					start: {
-						offset: 0,
-					},
-					end: {
-						offset: 0,
-					},
-				},
+				data: "Hello, world!",
+				pos1: 0,
+				pos2: 0,
 			},
 		},
 	)
@@ -127,6 +130,12 @@ export default function App() {
 						onPointerUp={e => {
 							dispatch.pointerUp()
 						}}
+						onBlur={e => {
+							dispatch.blur()
+						}}
+						onFocus={e => {
+							dispatch.focus()
+						}}
 						onKeyDown={e => {
 							const fn = {
 								ArrowUp: dispatch.keyDownArrowUp,
@@ -145,7 +154,7 @@ export default function App() {
 
 						{/* prettier-ignore */}
 						<p>
-							{state.document.content}
+							{state.document.data}
 						</p>
 
 						<br />
