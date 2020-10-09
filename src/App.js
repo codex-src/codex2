@@ -226,12 +226,13 @@ export default function App() {
 				start: 0,
 				end: 0,
 			}
+			// state.document.content.slice(0, state.document.range.start)
 			clear(measureRef.current)
 			const textNode = document.createTextNode("Hello, ")
 			measureRef.current.appendChild(textNode)
 			computed.start = measureRef.current.getBoundingClientRect().right
 			measureRef.current.lastChild.nodeValue += "world"
-			computed.end = measureRef.current.getBoundingClientRect().right - computed.start
+			computed.end = measureRef.current.getBoundingClientRect().right
 			measureRef.current.lastChild.nodeValue += "!"
 			// dispatch.setRangeComputed(right)
 			dispatch.setComputedOpenRange(computed)
@@ -283,7 +284,7 @@ export default function App() {
 						style={{
 							whiteSpace: "pre-wrap",
 							fontSize: 19,
-							outline: "1px solid hsla(0, 100%, 50%, 0.25)",
+							// outline: "1px solid hsla(0, 100%, 50%, 0.25)",
 
 							// pointerEvents: "none",
 							userSelect: "none",
@@ -343,13 +344,26 @@ export default function App() {
 						{/**/}
 
 						{/* prettier-ignore */}
+						{/* <AbsoluteCaret style={{ left: state.document.range.__computed, zIndex: 20 }} /> */}
 						<Relative style={{ height: rem(19 * 1.5) }}>
-							{/* {state.activeElement && (
-								<AbsoluteCaret style={{ left: state.document.range.__computed, zIndex: 20 }} />
-							)} */}
-							<Absolute style={{ zIndex: 10 }}>
-								{state.document.content}
-							</Absolute>
+							{/* {state.activeElement && ( */}
+							<div
+								style={{
+									marginLeft: rem(-1),
+									position: "absolute",
+									top: 0,
+									right: "auto",
+									bottom: 0,
+									left: state.document.range.__computed.end,
+									borderRight: `${rem(2)} solid var(--caret-color)`,
+									borderRadius: 9999,
+									zIndex: 20,
+									pointerEvents: "none",
+									userSelect: "none",
+								}}
+							/>
+							{/* )} */}
+							<Absolute style={{ zIndex: 10 }}>{state.document.content}</Absolute>
 							<div
 								style={{
 									position: "absolute",
@@ -357,8 +371,12 @@ export default function App() {
 									right: "auto",
 									bottom: 0,
 									left: state.document.range.__computed.start,
-									width: state.document.range.__computed.end,
+									width: state.document.range.__computed.end - state.document.range.__computed.start,
 									backgroundColor: "var(--selection-color)",
+									borderRadius: rem(3),
+									zIndex: 0,
+									pointerEvents: "none",
+									userSelect: "none",
 								}}
 							/>
 						</Relative>
