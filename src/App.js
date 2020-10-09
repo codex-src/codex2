@@ -33,12 +33,9 @@ export default function App() {
 
 	const [state, dispatch] = useMethods(
 		state => ({
-			// resize(clientRect) {
-			// 	state.clientRect = clientRect
-			// },
-			pointerMove({ x, y }) {
-				state.pointer.x = x
-				state.pointer.y = y
+			pointerMove({ x: rawX, y: rawY }) {
+				state.pointer.x = Math.round(rawX)
+				state.pointer.y = Math.round(rawY)
 			},
 			pointerDown() {
 				state.pointer.down = true
@@ -54,36 +51,25 @@ export default function App() {
 			},
 		}),
 		{
-			// clientRect: {
-			// 	top: 0,
-			// 	right: 0,
-			// 	bottom: 0,
-			// 	left: 0,
-			// 	width: 0,
-			// 	height: 0,
-			// 	x: 0,
-			// 	y: 0,
-			// },
 			pointer: {
 				down: false,
 				x: 0,
 				y: 0,
 			},
 			activeElement: false,
+			document: {
+				content: "Hello, world!",
+				selection: {
+					start: {
+						// ...
+					},
+					end: {
+						// ...
+					},
+				},
+			},
 		},
 	)
-
-	// React.useLayoutEffect(() => {
-	// 	const handler = e => {
-	// 		const clientRect = articleRef.current.getBoundingClientRect()
-	// 		dispatch.resize(clientRect)
-	// 	}
-	// 	handler()
-	// 	window.addEventListener("resize", handler, false)
-	// 	return () => {
-	// 		window.removeEventListener("resize", handler, false)
-	// 	}
-	// }, [dispatch])
 
 	return (
 		<Antialiased>
@@ -107,15 +93,13 @@ export default function App() {
 						{/**/}
 
 						{/* prettier-ignore */}
-						{/* <p>
-							{state.text}
-						</p> */}
+						<p>
+							{state.document.content}
+						</p>
 
-						{/* prettier-ignore */}
+						<br />
 						<Unantialiased>
-							<pre style={{ fontSize: 12 }}>
-								{JSON.stringify(state, null, 2)}
-							</pre>
+							<pre style={{ fontSize: 12 }}>{JSON.stringify(state, null, 2)}</pre>
 						</Unantialiased>
 
 						{/**/}
