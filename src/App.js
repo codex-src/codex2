@@ -36,15 +36,23 @@ function getKeyDownModKeys(e) {
 }
 
 const methods = state => ({
-	pointerMove({ x: rawX, y: rawY }) {
-		state.pointer.x = Math.round(rawX)
-		state.pointer.y = Math.round(rawY)
+	pointerMove({ pointer, range }) {
+		state.pointer.x = pointer.x
+		state.pointer.y = pointer.y
+		// state.pointer.down = true
+
+		if (state.pointer.down) {
+			state.document.range.start = range.start
+			state.document.range.end = range.end
+		}
 	},
-	pointerDown({ range: { start, end } }) {
+	pointerDown({ pointer, range }) {
+		state.pointer.x = pointer.x
+		state.pointer.y = pointer.y
 		state.pointer.down = true
 
-		state.document.range.start = start
-		state.document.range.end = end
+		state.document.range.start = range.start
+		state.document.range.end = range.end
 	},
 	pointerUp() {
 		state.pointer.down = false
@@ -52,13 +60,6 @@ const methods = state => ({
 
 	setRangeCoords(coords) {
 		state.document.range.coords = coords
-	},
-
-	arrowUp(modKeys) {
-		// ...
-	},
-	arrowDown(modKeys) {
-		// ...
 	},
 
 	// dir=up
@@ -102,6 +103,16 @@ const methods = state => ({
 		}
 	},
 
+	// keyDownBackspace() {
+	// 	// ...
+	// },
+	// keyDownForwardBackspace() {
+	// 	// ...
+	// },
+	// keyDownCharacter(character) {
+	// 	// ...
+	// },
+
 	focus() {
 		state.activeElement = true
 	},
@@ -112,9 +123,9 @@ const methods = state => ({
 
 const initialState = {
 	pointer: {
-		down: false,
 		x: 0,
 		y: 0,
+		down: false,
 	},
 	activeElement: false,
 	document: {
@@ -195,16 +206,28 @@ export default function App() {
 							outline: "none",
 						}}
 						onPointerMove={e => {
-							dispatch.pointerMove({
+							const pointer = {
 								x: e.clientX,
 								y: e.clientY,
-							})
+							}
+							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
+							const range = {
+								start: caretRange.startOffset,
+								end: caretRange.endOffset,
+							}
+							dispatch.pointerMove({ pointer, range })
 						}}
 						onPointerDown={e => {
+							const pointer = {
+								x: e.clientX,
+								y: e.clientY,
+							}
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
-							const start = caretRange.startOffset
-							const end = caretRange.endOffset
-							dispatch.pointerDown({ range: { start, end } })
+							const range = {
+								start: caretRange.startOffset,
+								end: caretRange.endOffset,
+							}
+							dispatch.pointerDown({ pointer, range })
 						}}
 						onPointerUp={e => {
 							dispatch.pointerUp()
