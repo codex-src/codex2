@@ -260,7 +260,6 @@ export default function App() {
 						--selection-color: hsla(200, 100%, 90%, 0.9);
 						--inactive-selection-color: hsla(200, 0%, 90%, 0.75);
 						--caret-color: hsla(200, 100%, 50%, 1);
-						--inactive-caret-color: hsla(200, 0%, 90%, 0);
 					}
 				`}
 			</style>
@@ -304,28 +303,42 @@ export default function App() {
 						onPointerMove={e => {
 							const method = dispatch.pointerMove
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
+
+							let start = caretRange.startOffset
+							let end = caretRange.endOffset
+							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
+								start = state.document.content.length
+								end = state.document.content.length
+							}
 							method({
 								coords: {
 									x: e.clientX,
 									y: e.clientY,
 								},
 								range: {
-									start: caretRange.startOffset,
-									end: caretRange.endOffset,
+									start,
+									end,
 								},
 							})
 						}}
 						onPointerDown={e => {
 							const method = dispatch.pointerDown
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
+
+							let start = caretRange.startOffset
+							let end = caretRange.endOffset
+							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
+								start = state.document.content.length
+								end = state.document.content.length
+							}
 							method({
 								coords: {
 									x: e.clientX,
 									y: e.clientY,
 								},
 								range: {
-									start: caretRange.startOffset,
-									end: caretRange.endOffset,
+									start,
+									end,
 								},
 							})
 						}}
@@ -355,9 +368,6 @@ export default function App() {
 					>
 						{/**/}
 
-						{/* TODO: Add active / inactive states */}
-
-						{/* prettier-ignore */}
 						<Relative style={{ height: rem(19 * 1.5) }}>
 							{state.document.activeElement && (
 								<div
@@ -376,9 +386,16 @@ export default function App() {
 									}}
 								/>
 							)}
-							<Absolute style={{ zIndex: 10 }}>
+							<Absolute
+								style={{
+									// pointerEvents: "none",
+									// userSelect: "none",
+									zIndex: 10,
+								}}
+							>
 								{state.document.content}
 							</Absolute>
+							{/* state.document.activeElement && */}
 							{state.document.range.start !== state.document.range.end && (
 								<div
 									style={{
@@ -388,7 +405,9 @@ export default function App() {
 										bottom: 0,
 										left: state.document.range.__computed.start,
 										width: state.document.range.__computed.end - state.document.range.__computed.start,
-										backgroundColor: "var(--selection-color)",
+										backgroundColor: !state.document.activeElement
+											? "var(--inactive-selection-color)"
+											: "var(--selection-color)",
 										borderRadius: rem(2),
 										zIndex: 0,
 										pointerEvents: "none",
