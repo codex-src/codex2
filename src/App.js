@@ -94,27 +94,17 @@ const methods = state => ({
 		// TODO
 	},
 	keyDownArrowLeft(modKeys) {
-		if (!modKeys.shiftKey) {
-			if (state.document.range.start > 0) {
-				state.document.range.start--
-				state.document.range.end--
-			}
-		} else {
-			if (state.document.range.start > 0) {
-				state.document.range.start--
-			}
+		// state.document.range.direction = "start"
+		if (state.document.range.start > 0) {
+			state.document.range.start--
+			state.document.range.end--
 		}
 	},
 	keyDownArrowRight(modKeys) {
-		if (!modKeys.shiftKey) {
-			if (state.document.range.end < state.document.content.length) {
-				state.document.range.start++
-				state.document.range.end++
-			}
-		} else {
-			if (state.document.range.end < state.document.content.length) {
-				state.document.range.end++
-			}
+		// state.document.range.direction = "start"
+		if (state.document.range.end < state.document.content.length) {
+			state.document.range.start++
+			state.document.range.end++
 		}
 	},
 
@@ -152,6 +142,7 @@ const initialState = {
 	document: {
 		content: "Hello, world!",
 		range: {
+			direction: "start",
 			start: 13, // FIXME
 			end: 13, // FIXME
 			coords: {
@@ -208,7 +199,12 @@ export default function App() {
 	useLayoutEffect(
 		useCallback(() => {
 			clear(measureRef.current)
-			const textNode = document.createTextNode(state.document.content.slice(0, state.document.range.start))
+			let textNode = null
+			if (state.document.range.direction === "start") {
+				textNode = document.createTextNode(state.document.content.slice(0, state.document.range.start))
+			} else if (state.document.range.direction === "end") {
+				textNode = document.createTextNode(state.document.content.slice(0, state.document.range.end))
+			}
 			measureRef.current.appendChild(textNode)
 			const { top, right } = measureRef.current.getBoundingClientRect()
 			const coords = { x: right, y: top }
@@ -243,7 +239,7 @@ export default function App() {
 						ref={articleRef}
 						style={{
 							fontSize: 19,
-							outline: "1px solid red",
+							outline: "none", // "1px solid red",
 
 							// pointerEvents: "none",
 							userSelect: "none",
