@@ -17,10 +17,13 @@ const Content = styled.div`
 	max-width: ${rem(768)};
 `
 
+// top: ${rem(-2)};
+// bottom: ${rem(-2)};
 const AbsoluteCaret = styled.span`
 	margin-left: ${rem(-1)};
 	position: absolute;
-	height: 100%;
+	top: 0;
+	bottom: 0;
 	border-right: ${rem(2)} solid var(--caret-color);
 	border-radius: 9999px;
 
@@ -73,8 +76,11 @@ const methods = state => ({
 		state.pointer.down = false
 	},
 
-	setRangeCoords(coords) {
-		state.document.range.coords = coords
+	// setRangeComputed(computed) {
+	// 	state.document.range.__computed = computed
+	// },
+	setComputedOpenRange(computed) {
+		state.document.range.__computed = computed
 	},
 
 	// dir=up
@@ -143,15 +149,33 @@ const initialState = {
 		content: "Hello, world!",
 		range: {
 			direction: "start",
-			start: 13, // FIXME
-			end: 13, // FIXME
-			coords: {
-				x: 0,
-				y: 0,
+			start: 0,
+			end: 0,
+			// __computed: 0,
+			__computed: {
+				left: 0,
+				right: 0,
 			},
 		},
 	},
 }
+
+// const document = {
+// 	range: {
+// 		start: {
+// 			id: "",
+// 			offset: 0,
+// 		},
+// 		end: {
+// 			id: "",
+// 			offset: 0,
+// 		},
+// 		computed: {
+// 			x1: 0,
+// 			x2: 0,
+// 		},
+// 	},
+// }
 
 // Ex:
 //
@@ -198,17 +222,19 @@ export default function App() {
 	// TODO: Move to reducer?
 	useLayoutEffect(
 		useCallback(() => {
-			clear(measureRef.current)
-			let textNode = null
-			if (state.document.range.direction === "start") {
-				textNode = document.createTextNode(state.document.content.slice(0, state.document.range.start))
-			} else if (state.document.range.direction === "end") {
-				textNode = document.createTextNode(state.document.content.slice(0, state.document.range.end))
+			const computed = {
+				start: 0,
+				end: 0,
 			}
+			clear(measureRef.current)
+			const textNode = document.createTextNode("Hello, ")
 			measureRef.current.appendChild(textNode)
-			const { top, right } = measureRef.current.getBoundingClientRect()
-			const coords = { x: right, y: top }
-			dispatch.setRangeCoords(coords)
+			computed.start = measureRef.current.getBoundingClientRect().right
+			measureRef.current.lastChild.nodeValue += "world"
+			computed.end = measureRef.current.getBoundingClientRect().right - computed.start
+			measureRef.current.lastChild.nodeValue += "!"
+			// dispatch.setRangeComputed(right)
+			dispatch.setComputedOpenRange(computed)
 		}, [state, dispatch]),
 		[state.document.range.start, state.document.range.end],
 	)
@@ -226,11 +252,8 @@ export default function App() {
 				`}
 			</style>
 
-			{/* prettier-ignore */}
-			<Absolute top left style={{ outline: "1px solid red" }}>
-				<div ref={measureRef}>
-					{/* ... */}
-				</div>
+			<Absolute top left sty>
+				<div ref={measureRef} />
 			</Absolute>
 
 			{/* <Relative style={{ height: 28 }}>
@@ -258,8 +281,9 @@ export default function App() {
 					<article
 						ref={articleRef}
 						style={{
+							whiteSpace: "pre-wrap",
 							fontSize: 19,
-							outline: "1px solid hsla(0, 100%, 50%, 0.1)",
+							outline: "1px solid hsla(0, 100%, 50%, 0.25)",
 
 							// pointerEvents: "none",
 							userSelect: "none",
@@ -267,8 +291,6 @@ export default function App() {
 						onPointerMove={e => {
 							const method = dispatch.pointerMove
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
-							// console.log(e.clientX, e.clientY)
-							// console.log(caretRange)
 							method({
 								coords: {
 									x: e.clientX,
@@ -322,21 +344,35 @@ export default function App() {
 
 						{/* prettier-ignore */}
 						<Relative style={{ height: rem(19 * 1.5) }}>
-							{state.activeElement && (
-								<AbsoluteCaret style={{ left: state.document.range.coords.x }} />
-							)}
-							<Absolute>
+							{/* {state.activeElement && (
+								<AbsoluteCaret style={{ left: state.document.range.__computed, zIndex: 20 }} />
+							)} */}
+							<Absolute style={{ zIndex: 10 }}>
 								{state.document.content}
 							</Absolute>
+							<div
+								style={{
+									position: "absolute",
+									top: 0,
+									right: "auto",
+									bottom: 0,
+									left: state.document.range.__computed.start,
+									width: state.document.range.__computed.end,
+									backgroundColor: "var(--selection-color)",
+								}}
+							/>
 						</Relative>
 
 						{/**/}
 					</article>
 
-					<br />
-					<Unantialiased>
-						<pre style={{ fontSize: 12 }}>{JSON.stringify(state, null, 2)}</pre>
-					</Unantialiased>
+					{/* prettier-ignore */}
+					<div>
+						<br />
+						<Unantialiased>
+							<pre style={{ fontSize: 12 }}>{JSON.stringify(state, null, 2)}</pre>
+						</Unantialiased>
+					</div>
 				</Content>
 			</Center>
 
