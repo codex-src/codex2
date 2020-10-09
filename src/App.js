@@ -81,35 +81,6 @@ const methods = state => ({
 	// boundary=node
 	// boundary=page
 	//
-	arrowLeft(modKeys) {
-		if (!modKeys.shiftKey) {
-			// Expand:
-			if (state.document.range.start > 0) {
-				state.document.range.start--
-				state.document.range.end--
-			}
-		} else {
-			// Move:
-			if (state.document.range.start > 0) {
-				state.document.range.start--
-			}
-		}
-	},
-	arrowRight(modKeys) {
-		if (!modKeys.shiftKey) {
-			// Expand:
-			if (state.document.range.end < state.document.content.length) {
-				state.document.range.start++
-				state.document.range.end++
-			}
-		} else {
-			// Move:
-			if (state.document.range.end < state.document.content.length) {
-				state.document.range.end++
-			}
-		}
-	},
-
 	keyDownArrowUp(modKeys) {
 		// TODO
 	},
@@ -117,10 +88,28 @@ const methods = state => ({
 		// TODO
 	},
 	keyDownArrowLeft(modKeys) {
-		this.arrowLeft(modKeys)
+		if (!modKeys.shiftKey) {
+			if (state.document.range.start > 0) {
+				state.document.range.start--
+				state.document.range.end--
+			}
+		} else {
+			if (state.document.range.start > 0) {
+				state.document.range.start--
+			}
+		}
 	},
 	keyDownArrowRight(modKeys) {
-		this.arrowRight(modKeys)
+		if (!modKeys.shiftKey) {
+			if (state.document.range.end < state.document.content.length) {
+				state.document.range.start++
+				state.document.range.end++
+			}
+		} else {
+			if (state.document.range.end < state.document.content.length) {
+				state.document.range.end++
+			}
+		}
 	},
 	focus() {
 		state.activeElement = true
