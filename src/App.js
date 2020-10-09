@@ -6,30 +6,16 @@ import styled, { css } from "styled-components"
 import rem from "rem"
 import useMethods from "use-methods"
 
-const Center = styled.div`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-`
-const Content = styled.div`
-	padding: ${rem(96)} ${rem(24)};
-	width: 100%;
-	max-width: ${rem(768)};
-`
-
-// top: ${rem(-2)};
-// bottom: ${rem(-2)};
-const AbsoluteCaret = styled.span`
-	margin-left: ${rem(-1)};
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	border-right: ${rem(2)} solid var(--caret-color);
-	border-radius: 9999px;
-
-	pointer-events: none;
-	user-select: none;
-`
+// const AbsoluteCaret = styled.span`
+// 	margin-left: ${rem(-1)};
+// 	position: absolute;
+// 	top: 0;
+// 	bottom: 0;
+// 	border-right: ${rem(2)} solid var(--caret-color);
+// 	border-radius: 9999px;
+// 	pointer-events: none;
+// 	user-select: none;
+// `
 
 function getKeyDownModKeys(e) {
 	const modKeys = {
@@ -149,8 +135,8 @@ const initialState = {
 		content: "Hello, world!",
 		range: {
 			direction: "start",
-			start: 0,
-			end: 0,
+			start: "Hello, ".length, // TODO
+			end: "Hello, world".length, // TODO
 			// __computed: 0,
 			__computed: {
 				left: 0,
@@ -186,6 +172,17 @@ function clear(element) {
 		element.lastChild.remove()
 	}
 }
+
+const Center = styled.div`
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+`
+const Content = styled.div`
+	padding: ${rem(96)} ${rem(24)};
+	width: 100%;
+	max-width: ${rem(768)};
+`
 
 export default function App() {
 	const articleRef = useRef(null)
@@ -226,14 +223,16 @@ export default function App() {
 				start: 0,
 				end: 0,
 			}
-			// state.document.content.slice(0, state.document.range.start)
 			clear(measureRef.current)
-			const textNode = document.createTextNode("Hello, ")
+			const textNode = document.createTextNode(state.document.content.slice(0, state.document.range.start))
 			measureRef.current.appendChild(textNode)
 			computed.start = measureRef.current.getBoundingClientRect().right
-			measureRef.current.lastChild.nodeValue += "world"
+			measureRef.current.lastChild.nodeValue += state.document.content.slice(
+				state.document.range.start,
+				state.document.range.end,
+			)
 			computed.end = measureRef.current.getBoundingClientRect().right
-			measureRef.current.lastChild.nodeValue += "!"
+			measureRef.current.lastChild.nodeValue += state.document.content.slice(state.document.range.end)
 			// dispatch.setRangeComputed(right)
 			dispatch.setComputedOpenRange(computed)
 		}, [state, dispatch]),
