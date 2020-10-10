@@ -180,26 +180,6 @@ export default function App() {
 				<div ref={measureRef} />
 			</Absolute>
 
-			{/* <Relative style={{ height: 28 }}>
-				<TransparentText>
-					Do elit ut id aute duis do sit velit quis ea elit.&nbsp;
-					<span style={{ position: "absolute", transform: "translateX(-100%)" }}>
-						<div style={{ position: "absolute" }}>
-							<div
-								style={{ width: 28, height: 28, backgroundColor: "white", borderBottomRightRadius: rem(4) }}
-							/>
-						</div>
-						<div style={{ width: 28, height: 28, backgroundColor: "var(--selection-background-color)" }} />
-					</span>
-					<SelectionText topLeft right>
-						Esse officia voluptate sit eu amet duis&nbsp;
-					</SelectionText>
-				</TransparentText>
-				<Absolute>
-					Do elit ut id aute duis do sit velit quis ea elit. Esse officia voluptate sit eu amet duis&nbsp;
-				</Absolute>
-			</Relative> */}
-
 			<Center>
 				<Content>
 					<article
@@ -296,7 +276,7 @@ export default function App() {
 									backgroundColor={
 										!state.document.activeElement ? "var(--inactive-caret-color)" : "var(--caret-color)"
 									}
-									preventAnimation
+									// preventAnimation
 								/>
 							{/* )} */}
 

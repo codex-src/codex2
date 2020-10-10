@@ -80,31 +80,41 @@ const methods = state => ({
 	// 	}
 	// },
 	keyDownArrowLeft(modKeys) {
-		if (!modKeys.shiftKey) {
-			// state.document.range.direction = "none"
-			if (state.document.range.start > 0) {
+		function arrowLeft() {
+			if (state.document.range.start) {
 				state.document.range.start--
-				state.document.range.end--
 			}
-		} else {
-			// state.document.range.direction = "backwards"
-			if (state.document.range.start > 0) {
+			state.document.range.end = state.document.range.start
+		}
+		function extendArrowLeft() {
+			if (state.document.range.start) {
 				state.document.range.start--
 			}
 		}
+
+		if (!modKeys.shiftKey) {
+			arrowLeft()
+		} else {
+			extendArrowLeft()
+		}
 	},
 	keyDownArrowRight(modKeys) {
+		function arrowRight() {
+			if (state.document.range.end < state.document.content.length) {
+				state.document.range.end++
+			}
+			state.document.range.start = state.document.range.end
+		}
+		function extendArrowRight() {
+			if (state.document.range.end < state.document.content.length) {
+				state.document.range.end++
+			}
+		}
+
 		if (!modKeys.shiftKey) {
-			// state.document.range.direction = "none"
-			if (state.document.range.end < state.document.content.length) {
-				state.document.range.start++
-				state.document.range.end++
-			}
+			arrowRight()
 		} else {
-			// state.document.range.direction = "forwards"
-			if (state.document.range.end < state.document.content.length) {
-				state.document.range.end++
-			}
+			extendArrowRight()
 		}
 	},
 
