@@ -94,26 +94,12 @@ export default function App() {
 
 	const caretRef = React.useRef(null)
 
-	// React.useEffect(() => {
-	// 	const DURATION = 1e3
-	// 	console.log("on")
-	// 	const itv = setInterval(() => {
-	// 		console.log("off")
-	// 		setTimeout(() => {
-	// 			console.log("on")
-	// 		}, DURATION / 2)
-	// 	}, DURATION)
-	// 	return () => {
-	// 		clearInterval(itv)
-	// 	}
-	// }, [state.document.range.start])
-
 	React.useEffect(() => {
-		if (!state.document.activeElement) {
+		if (!state.activeElement) {
 			// No-op
 			return
 		}
-		const open = state.document.range.start !== state.document.range.end
+		const open = state.range.start !== state.range.end
 		if (!open) {
 			caretRef.current.style.animation = "none"
 			const id = setTimeout(() => {
@@ -125,7 +111,7 @@ export default function App() {
 		} else {
 			caretRef.current.style.animation = "none"
 		}
-	}, [state.document.activeElement, state.document.range.start, state.document.range.end])
+	}, [state.activeElement, state.range.start, state.range.end])
 
 	React.useLayoutEffect(() => {
 		const handler = e => {
@@ -162,19 +148,16 @@ export default function App() {
 				end: 0,
 			}
 			clear(measureRef.current)
-			const textNode = document.createTextNode(state.document.content.slice(0, state.document.range.start))
+			const textNode = document.createTextNode(state.content.slice(0, state.range.start))
 			measureRef.current.appendChild(textNode)
 			computed.start = measureRef.current.getBoundingClientRect().right
-			measureRef.current.lastChild.nodeValue += state.document.content.slice(
-				state.document.range.start,
-				state.document.range.end,
-			)
+			measureRef.current.lastChild.nodeValue += state.content.slice(state.range.start, state.range.end)
 			computed.end = measureRef.current.getBoundingClientRect().right
-			measureRef.current.lastChild.nodeValue += state.document.content.slice(state.document.range.end)
+			measureRef.current.lastChild.nodeValue += state.content.slice(state.range.end)
 			// dispatch.setRangeComputed(right)
 			dispatch.setComputedOpenRange(computed)
 		}, [state, dispatch]),
-		[state.document.range.start, state.document.range.end],
+		[state.range.start, state.range.end],
 	)
 
 	return (
@@ -205,8 +188,8 @@ export default function App() {
 							let start = caretRange.startOffset
 							let end = caretRange.endOffset
 							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
-								start = state.document.content.length
-								end = state.document.content.length
+								start = state.content.length
+								end = state.content.length
 							}
 							method({
 								coords: {
@@ -226,8 +209,8 @@ export default function App() {
 							let start = caretRange.startOffset
 							let end = caretRange.endOffset
 							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
-								start = state.document.content.length
-								end = state.document.content.length
+								start = state.content.length
+								end = state.content.length
 							}
 							method({
 								coords: {
@@ -269,27 +252,27 @@ export default function App() {
 						<Relative style={{ height: rem(19 * 1.5) }}>
 							{/**/}
 
-							{state.document.activeElement && (
+							{state.activeElement && (
 								<AbsoluteCaret
 									ref={caretRef}
 									left={
 										// prettier-ignore
-										state.document.range.direction === "backwards"
-											? state.document.range.__computed.start
-											: state.document.range.__computed.end
+										state.range.direction === "backwards"
+											? state.range.__computed.start
+											: state.range.__computed.end
 									}
 								/>
 							)}
 
-							<Absolute style={{ zIndex: 10 }}>{state.document.content}</Absolute>
+							<Absolute style={{ zIndex: 10 }}>{state.content}</Absolute>
 
-							{state.document.range.start !== state.document.range.end && (
+							{state.range.start !== state.range.end && (
 								<AbsoluteSelection
-									left={state.document.range.__computed.start}
-									width={state.document.range.__computed.end - state.document.range.__computed.start}
+									left={state.range.__computed.start}
+									width={state.range.__computed.end - state.range.__computed.start}
 									backgroundColor={
 										// prettier-ignore
-										!state.document.activeElement
+										!state.activeElement
 											? "var(--inactive-selection-color)"
 											: "var(--selection-color)"
 									}
@@ -303,7 +286,7 @@ export default function App() {
 					<div>
 						<br />
 						<Unantialiased>
-							<pre style={{ fontSize: 12 }}>{JSON.stringify({ range: state.document.range }, null, 2)}</pre>
+							<pre style={{ fontSize: 12 }}>{JSON.stringify({ range: state.range }, null, 2)}</pre>
 						</Unantialiased>
 					</div>
 

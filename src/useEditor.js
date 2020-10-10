@@ -1,53 +1,53 @@
 import useMethods from "use-methods"
 
 function arrowLeft(state) {
-	state.document.range.direction = "none"
-	if (state.document.range.start) {
-		state.document.range.start--
+	state.range.direction = "none"
+	if (state.range.start) {
+		state.range.start--
 	}
-	state.document.range.end = state.document.range.start
+	state.range.end = state.range.start
 }
 
 function arrowRight(state) {
-	state.document.range.direction = "none"
-	if (state.document.range.end < state.document.content.length) {
-		state.document.range.end++
+	state.range.direction = "none"
+	if (state.range.end < state.content.length) {
+		state.range.end++
 	}
-	state.document.range.start = state.document.range.end
+	state.range.start = state.range.end
 }
 
 function arrowLeftExtend(state) {
-	if (state.document.range.start) {
-		if (state.document.range.start === state.document.range.end) {
-			state.document.range.direction = "backwards"
+	if (state.range.start) {
+		if (state.range.start === state.range.end) {
+			state.range.direction = "backwards"
 		}
-		state.document.range.start--
+		state.range.start--
 	}
 }
 
 function arrowRightExtend(state) {
-	if (state.document.range.end < state.document.content.length) {
-		if (state.document.range.start === state.document.range.end) {
-			state.document.range.direction = "forwards"
+	if (state.range.end < state.content.length) {
+		if (state.range.start === state.range.end) {
+			state.range.direction = "forwards"
 		}
-		state.document.range.end++
+		state.range.end++
 	}
 }
 
 function arrowLeftReduce(state) {
-	if (state.document.range.end) {
-		state.document.range.end--
-		if (state.document.range.start === state.document.range.end) {
-			state.document.range.direction = "none"
+	if (state.range.end) {
+		state.range.end--
+		if (state.range.start === state.range.end) {
+			state.range.direction = "none"
 		}
 	}
 }
 
 function arrowRightReduce(state) {
-	if (state.document.range.start < state.document.content.length) {
-		state.document.range.start++
-		if (state.document.range.start === state.document.range.end) {
-			state.document.range.direction = "none"
+	if (state.range.start < state.content.length) {
+		state.range.start++
+		if (state.range.start === state.range.end) {
+			state.range.direction = "none"
 		}
 	}
 }
@@ -74,37 +74,37 @@ const methods = state => ({
 		// 	return
 		// }
 
-		// TODO: Add state.document.direction values here?
+		// TODO: Add state.direction values here?
 		// TODO: Add support for shiftKey?
-		state.document.range.start = range.start
-		// state.document.range.end = range.end
+		state.range.start = range.start
+		// state.range.end = range.end
 	},
 	pointerDown({ coords, range }) {
 		state.pointer.x = coords.x
 		state.pointer.y = coords.y
 		state.pointer.down = true
 
-		// TODO: Add state.document.direction values here?
+		// TODO: Add state.direction values here?
 		// TODO: Add support for shiftKey?
-		state.document.range.start = range.start
-		state.document.range.end = range.end
+		state.range.start = range.start
+		state.range.end = range.end
 	},
 	pointerUp() {
 		state.pointer.down = false
 	},
 
 	// setRangeComputed(computed) {
-	// 	state.document.range.__computed = computed
+	// 	state.range.__computed = computed
 	// },
 	setComputedOpenRange(computed) {
-		state.document.range.__computed = computed
+		state.range.__computed = computed
 	},
 
 	focus() {
-		state.document.activeElement = true
+		state.activeElement = true
 	},
 	blur() {
-		state.document.activeElement = false
+		state.activeElement = false
 	},
 
 	keyDownArrowUp(modKeys) {
@@ -118,7 +118,7 @@ const methods = state => ({
 			arrowLeft(state)
 		} else {
 			// arrowLeftExtend(state)
-			if (state.document.range.direction === "forwards") {
+			if (state.range.direction === "forwards") {
 				arrowLeftReduce(state)
 			} else {
 				arrowLeftExtend(state)
@@ -129,7 +129,7 @@ const methods = state => ({
 		if (!modKeys.shiftKey) {
 			arrowRight(state)
 		} else {
-			if (state.document.range.direction === "backwards") {
+			if (state.range.direction === "backwards") {
 				arrowRightReduce(state)
 			} else {
 				arrowRightExtend(state)
@@ -160,29 +160,29 @@ const initialState = {
 		y: 0,
 		down: false,
 	},
-	document: {
-		activeElement: false,
-		content: "Hello, world!",
-		range: {
-			direction: "none",
-			start: 0,
-			end: 0,
-			// TODO: Move computed to state.__computed.range?
-			__computed: {
-				left: 0,
-				right: 0,
-			},
+	// document: {
+	activeElement: false,
+	content: "Hello, world!",
+	range: {
+		direction: "none",
+		start: 0,
+		end: 0,
+		// TODO: Move computed to state.__computed.range?
+		__computed: {
+			left: 0,
+			right: 0,
 		},
 	},
+	// },
 }
 
 function init(initialValue) {
 	const state = {
 		...initialState,
-		document: {
-			...initialState.document,
-			content: initialValue,
-		},
+		// document: {
+		// ...initialState,
+		content: initialValue,
+		// },
 	}
 	return state
 }
