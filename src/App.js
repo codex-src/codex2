@@ -59,10 +59,9 @@ const AbsoluteCaret = styled.span.attrs(props => ({
 	background-color: var(--caret-color);
 	border-radius: 9999px;
 	animation: ${props =>
+		// prettier-ignore
 		!props.preventAnimation
-			? css`
-					${blink} 1s cubic-bezier(0, 1, 0, 1) infinite
-			  `
+			?  css`${blink} 1s cubic-bezier(0, 1, 0, 1) infinite`
 			: "none"};
 	z-index: 20;
 	pointer-events: none;
@@ -116,15 +115,15 @@ export default function App() {
 		}
 		const open = state.range.start !== state.range.end
 		if (!open) {
-			caretRef.current.style.animation = "none"
+			caretRef.current.style.animationName = "none"
 			const id = setTimeout(() => {
-				caretRef.current.style.animation = ""
+				caretRef.current.style.animationName = ""
 			}, 250)
 			return () => {
 				clearTimeout(id)
 			}
 		} else {
-			caretRef.current.style.animation = "none"
+			caretRef.current.style.animationName = "none"
 		}
 	}, [state.activeElement, state.range.start, state.range.end])
 
