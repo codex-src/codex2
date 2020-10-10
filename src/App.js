@@ -180,6 +180,7 @@ export default function App() {
 							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
 								offset = state.content.length
 							}
+							console.log(offset)
 							dispatch.pointerMove(offset)
 						}}
 						onPointerDown={e => {
@@ -188,6 +189,7 @@ export default function App() {
 							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
 								offset = state.content.length
 							}
+							console.log(offset)
 							dispatch.pointerDown(offset, { shiftKey: e.shiftKey })
 						}}
 						onPointerUp={e => {
@@ -252,7 +254,16 @@ export default function App() {
 								/>
 							)}
 
-							<Absolute style={{ zIndex: 10 }}>{state.content}</Absolute>
+							<Absolute
+								className="disable-native-selection"
+								style={{
+									zIndex: 10,
+									// WebkitUserSelect: "none",
+									// userSelect: "none",
+								}}
+							>
+								{state.content}
+							</Absolute>
 
 							{state.range.start !== state.range.end && (
 								<AbsoluteSelection

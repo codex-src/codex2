@@ -4,3 +4,10 @@ html {
 	--caret-color: hsl(220, 100%, 45%);
 	--inactive-caret-color: transparent;
 }
+
+.disable-native-selection::-moz-selection {
+	background-color: transparent;
+}
+.disable-native-selection::selection {
+	background-color: transparent;
+}
