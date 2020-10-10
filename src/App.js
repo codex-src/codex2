@@ -197,6 +197,7 @@ export default function App() {
 							// pointerEvents: "none",
 							userSelect: "none",
 						}}
+						// console.log({ start, end })
 						onPointerMove={e => {
 							const method = dispatch.pointerMove
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
@@ -309,12 +310,12 @@ export default function App() {
 						{/**/}
 					</article>
 
-					{/* <div>
+					<div>
 						<br />
 						<Unantialiased>
-							<pre style={{ fontSize: 12 }}>{JSON.stringify(state, null, 2)}</pre>
+							<pre style={{ fontSize: 12 }}>{JSON.stringify({ range: state.document.range }, null, 2)}</pre>
 						</Unantialiased>
-					</div> */}
+					</div>
 				</Content>
 			</Center>
 

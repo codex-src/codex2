@@ -10,6 +10,7 @@ const methods = state => ({
 		state.pointer.y = coords.y
 		// state.pointer.down = true
 
+		// Scope pointer events to state.layout:
 		if (!state.pointer.down) {
 			// No-op
 			return
@@ -20,6 +21,9 @@ const methods = state => ({
 			// No-op
 			return
 		}
+
+		// TODO: Add state.document.direction values here?
+		// TODO: Add support for shiftKey?
 		state.document.range.start = range.start
 		// state.document.range.end = range.end
 	},
@@ -28,6 +32,8 @@ const methods = state => ({
 		state.pointer.y = coords.y
 		state.pointer.down = true
 
+		// TODO: Add state.document.direction values here?
+		// TODO: Add support for shiftKey?
 		state.document.range.start = range.start
 		state.document.range.end = range.end
 	},
@@ -81,6 +87,7 @@ const methods = state => ({
 	// },
 	keyDownArrowLeft(modKeys) {
 		function arrowLeft() {
+			state.document.range.direction = "none"
 			if (state.document.range.start) {
 				state.document.range.start--
 			}
@@ -88,6 +95,9 @@ const methods = state => ({
 		}
 		function extendArrowLeft() {
 			if (state.document.range.start) {
+				if (state.document.range.start === state.document.range.end) {
+					state.document.range.direction = "backwards"
+				}
 				state.document.range.start--
 			}
 		}
@@ -100,6 +110,7 @@ const methods = state => ({
 	},
 	keyDownArrowRight(modKeys) {
 		function arrowRight() {
+			state.document.range.direction = "none"
 			if (state.document.range.end < state.document.content.length) {
 				state.document.range.end++
 			}
@@ -107,6 +118,9 @@ const methods = state => ({
 		}
 		function extendArrowRight() {
 			if (state.document.range.end < state.document.content.length) {
+				if (state.document.range.start === state.document.range.end) {
+					state.document.range.direction = "forwards"
+				}
 				state.document.range.end++
 			}
 		}
@@ -145,7 +159,7 @@ const initialState = {
 		activeElement: false,
 		content: "Hello, world!",
 		range: {
-			// direction: "start", // TODO
+			direction: "none",
 			start: 0,
 			end: 0,
 			// TODO: Move computed to state.__computed.range?
