@@ -94,6 +94,12 @@ const methods = state => ({
 	reduceArrowToRight() {
 		reduceArrowToRight(state)
 	},
+
+	selectAll() {
+		state.direction = "forwards"
+		state.range.start = 0
+		state.range.end = state.content.length
+	},
 })
 
 const initialState = {

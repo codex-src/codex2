@@ -84,6 +84,9 @@ const AbsoluteSelection = styled.span.attrs(props => ({
 	user-select: none;
 `
 
+// TODO: Add <div contenteditable> or <textarea>
+// TODO: Move event handlers to input element
+//
 export default function App() {
 	const articleRef = useRef(null)
 	const measureRef = useRef(null)
@@ -226,6 +229,8 @@ export default function App() {
 										dispatch.reduceArrowToRight()
 									}
 								}
+							} else if (e.metaKey && e.key === "a") {
+								dispatch.selectAll()
 							}
 						}}
 						tabIndex={0}
@@ -269,13 +274,13 @@ export default function App() {
 					<br />
 
 					{/* prettier-ignore */}
-					<div>
+					{/* <div>
 						<Unantialiased>
 							<pre style={{ fontSize: 12 }}>
 								{JSON.stringify(state, null, 2)}
 							</pre>
 						</Unantialiased>
-					</div>
+					</div> */}
 
 					{/**/}
 				</Content>
