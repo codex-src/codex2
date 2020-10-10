@@ -53,37 +53,48 @@ function arrowRightReduce(state) {
 }
 
 const methods = state => ({
-	pointerMove({ coords, range }) {
-		state.pointer.x = coords.x
-		state.pointer.y = coords.y
-		// state.pointer.down = true
-
+	pointerMove(range) {
 		if (!state.pointer.down) {
 			// No-op
 			return
 		}
-
-		// TODO: Add state.direction values here?
-		// TODO: Add support for shiftKey?
-		state.range.start = range.start
-		// state.range.end = range.end
+		state.range = range
 	},
-	pointerDown({ coords, range }) {
-		state.pointer.x = coords.x
-		state.pointer.y = coords.y
-		state.pointer.down = true
-
-		// TODO: Add state.direction values here?
-		// TODO: Add support for shiftKey?
-		state.range.start = range.start
-		state.range.end = range.end
+	pointerDown(range) {
+		state.pointerDown = true
+		state.range = range
 	},
 	pointerUp() {
-		state.pointer.down = false
+		state.pointerDown = false
 	},
 
-	// setComputedOpenRange(computed) {
-	// 	state.range.__computed = computed
+	//	pointerMove({ coords, range }) {
+	//		state.pointer.x = coords.x
+	//		state.pointer.y = coords.y
+	//		// state.pointer.down = true
+	//
+	//		if (!state.pointer.down) {
+	//			// No-op
+	//			return
+	//		}
+	//
+	//		// TODO: Add state.direction values here?
+	//		// TODO: Add support for shiftKey?
+	//		state.range.start = range.start
+	//		// state.range.end = range.end
+	//	},
+	//	pointerDown({ coords, range }) {
+	//		state.pointer.x = coords.x
+	//		state.pointer.y = coords.y
+	//		state.pointer.down = true
+	//
+	//		// TODO: Add state.direction values here?
+	//		// TODO: Add support for shiftKey?
+	//		state.range.start = range.start
+	//		state.range.end = range.end
+	//	},
+	// pointerUp() {
+	// 	state.pointer.down = false
 	// },
 
 	focus() {
@@ -100,38 +111,28 @@ const methods = state => ({
 		// TODO
 	},
 	keyDownArrowLeft(modKeys) {
-		if (!modKeys.shiftKey) {
-			arrowLeft(state)
-		} else {
-			// arrowLeftExtend(state)
-			if (state.range.direction === "forwards") {
-				arrowLeftReduce(state)
-			} else {
-				arrowLeftExtend(state)
-			}
-		}
+		// if (!modKeys.shiftKey) {
+		// 	arrowLeft(state)
+		// } else {
+		// 	// arrowLeftExtend(state)
+		// 	if (state.range.direction === "forwards") {
+		// 		arrowLeftReduce(state)
+		// 	} else {
+		// 		arrowLeftExtend(state)
+		// 	}
+		// }
 	},
 	keyDownArrowRight(modKeys) {
-		if (!modKeys.shiftKey) {
-			arrowRight(state)
-		} else {
-			if (state.range.direction === "backwards") {
-				arrowRightReduce(state)
-			} else {
-				arrowRightExtend(state)
-			}
-		}
+		// if (!modKeys.shiftKey) {
+		// 	arrowRight(state)
+		// } else {
+		// 	if (state.range.direction === "backwards") {
+		// 		arrowRightReduce(state)
+		// 	} else {
+		// 		arrowRightExtend(state)
+		// 	}
+		// }
 	},
-
-	// keyDownBackspace() {
-	// 	// ...
-	// },
-	// keyDownForwardBackspace() {
-	// 	// ...
-	// },
-	// keyDownCharacter(character) {
-	// 	// ...
-	// },
 })
 
 const initialState = {
@@ -146,10 +147,6 @@ const initialState = {
 		direction: "none",
 		start: 0,
 		end: 0,
-		// __computed: {
-		// 	left: 0,
-		// 	right: 0,
-		// },
 	},
 }
 

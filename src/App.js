@@ -1,10 +1,10 @@
 import "variables.css"
 
 import { Absolute, Relative } from "position"
-import { Antialiased, Unantialiased } from "Antialiasing"
 import React, { useCallback, useLayoutEffect, useRef, useState } from "react"
 import styled, { css, keyframes } from "styled-components"
 
+import { Antialiased } from "Antialiasing"
 import rem from "rem"
 import useEditor from "useEditor"
 
@@ -164,45 +164,45 @@ export default function App() {
 							userSelect: "none",
 						}}
 						onPointerMove={e => {
-							const method = dispatch.pointerMove
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
 
-							let start = caretRange.startOffset
-							let end = caretRange.endOffset
+							let direction = "none"
+							if (caretRange.startOffset < caretRange.endOffset) {
+								direction = "backwards"
+							} else if (caretRange.startOffset > caretRange.endOffset) {
+								direction = "forwards"
+							}
+							let start = Math.min(caretRange.startOffset, caretRange.endOffset)
+							let end = Math.max(caretRange.startOffset, caretRange.endOffset)
 							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
 								start = state.content.length
 								end = state.content.length
 							}
-							method({
-								coords: {
-									x: e.clientX,
-									y: e.clientY,
-								},
-								range: {
-									start,
-									end,
-								},
+							dispatch.pointerMove({
+								direction,
+								start,
+								end,
 							})
 						}}
 						onPointerDown={e => {
-							const method = dispatch.pointerDown
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
 
-							let start = caretRange.startOffset
-							let end = caretRange.endOffset
+							let direction = "none"
+							if (caretRange.startOffset < caretRange.endOffset) {
+								direction = "backwards"
+							} else if (caretRange.startOffset > caretRange.endOffset) {
+								direction = "forwards"
+							}
+							let start = Math.min(caretRange.startOffset, caretRange.endOffset)
+							let end = Math.max(caretRange.startOffset, caretRange.endOffset)
 							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
 								start = state.content.length
 								end = state.content.length
 							}
-							method({
-								coords: {
-									x: e.clientX,
-									y: e.clientY,
-								},
-								range: {
-									start,
-									end,
-								},
+							dispatch.pointerDown({
+								direction,
+								start,
+								end,
 							})
 						}}
 						onPointerUp={e => {
