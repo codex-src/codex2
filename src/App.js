@@ -2,7 +2,7 @@ import "variables.css"
 
 import { Absolute, Relative } from "position"
 import { Antialiased, Unantialiased } from "Antialiasing"
-import React, { useCallback, useLayoutEffect, useRef } from "react"
+import React, { useCallback, useLayoutEffect, useRef, useState } from "react"
 import styled, { css, keyframes } from "styled-components"
 
 import rem from "rem"
@@ -16,16 +16,6 @@ function getKeyDownModKeys(e) {
 		metaKey: e.metaKey,
 	}
 	return modKeys
-}
-
-// Ex:
-//
-// <div><br /></div> -> <div></div>
-//
-function clear(element) {
-	while (element.lastChild) {
-		element.lastChild.remove()
-	}
 }
 
 const Center = styled.div`
@@ -90,10 +80,26 @@ export default function App() {
 	const articleRef = useRef(null)
 	const measureRef = useRef(null)
 
-	const [state, dispatch] = useEditor("Veniam sunt sunt nisi est enim elit eiusmod do reprehenderit minim.")
-
 	const caretRef = React.useRef(null)
 
+	const [state, dispatch] = useEditor("Veniam sunt sunt nisi est enim elit eiusmod do reprehenderit minim.")
+
+	const [computed, setComputed] = useState({
+		range: {
+			start: 0,
+			end: 0,
+		},
+	})
+
+	useLayoutEffect(() => {
+		const src = articleRef.current
+		const dst = measureRef.current
+		for (const each of [...src.style]) {
+			dst.style[each] = src.style[each]
+		}
+	}, [])
+
+	// TODO: useCaretAnimation
 	React.useEffect(() => {
 		if (!state.activeElement) {
 			// No-op
@@ -113,50 +119,27 @@ export default function App() {
 		}
 	}, [state.activeElement, state.range.start, state.range.end])
 
-	React.useLayoutEffect(() => {
-		const handler = e => {
-			const clientRect = articleRef.current.getBoundingClientRect()
-			// prettier-ignore
-			dispatch.resize({
-				top:    clientRect.top,
-				right:  clientRect.right,
-				bottom: clientRect.bottom,
-				left:   clientRect.left,
-			})
-		}
-		handler() // Once
-		window.addEventListener("resize", handler, false)
-		return () => {
-			window.removeEventListener("resize", handler, false)
-		}
-	}, [dispatch])
-
-	// Once
-	useLayoutEffect(() => {
-		const src = articleRef.current
-		const dst = measureRef.current
-		for (const each of [...src.style]) {
-			dst.style[each] = src.style[each]
-		}
-	}, [])
-
-	// TODO: Move to reducer?
+	// TODO: useComputed
 	useLayoutEffect(
 		useCallback(() => {
-			const computed = {
-				start: 0,
-				end: 0,
+			while (measureRef.current.lastChild) {
+				measureRef.current.lastChild.remove()
 			}
-			clear(measureRef.current)
 			const textNode = document.createTextNode(state.content.slice(0, state.range.start))
 			measureRef.current.appendChild(textNode)
-			computed.start = measureRef.current.getBoundingClientRect().right
+			const start = measureRef.current.getBoundingClientRect().right
 			measureRef.current.lastChild.nodeValue += state.content.slice(state.range.start, state.range.end)
-			computed.end = measureRef.current.getBoundingClientRect().right
+			const end = measureRef.current.getBoundingClientRect().right
 			measureRef.current.lastChild.nodeValue += state.content.slice(state.range.end)
-			// dispatch.setRangeComputed(right)
-			dispatch.setComputedOpenRange(computed)
-		}, [state, dispatch]),
+			setComputed(current => ({
+				...current,
+				range: {
+					...current.range,
+					start,
+					end,
+				},
+			}))
+		}, [state]),
 		[state.range.start, state.range.end],
 	)
 
@@ -175,12 +158,11 @@ export default function App() {
 						style={{
 							whiteSpace: "pre-wrap",
 							fontSize: 19,
-							outline: "none", // "1px solid hsla(0, 100%, 50%, 0.25)",
+							outline: "none",
 
 							// pointerEvents: "none",
 							userSelect: "none",
 						}}
-						// console.log({ start, end })
 						onPointerMove={e => {
 							const method = dispatch.pointerMove
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
@@ -258,8 +240,8 @@ export default function App() {
 									left={
 										// prettier-ignore
 										state.range.direction === "backwards"
-											? state.range.__computed.start
-											: state.range.__computed.end
+											? computed.range.start
+											: computed.range.end
 									}
 								/>
 							)}
@@ -268,8 +250,8 @@ export default function App() {
 
 							{state.range.start !== state.range.end && (
 								<AbsoluteSelection
-									left={state.range.__computed.start}
-									width={state.range.__computed.end - state.range.__computed.start}
+									left={computed.range.start}
+									width={computed.range.end - computed.range.start}
 									backgroundColor={
 										// prettier-ignore
 										!state.activeElement
@@ -283,12 +265,12 @@ export default function App() {
 						{/**/}
 					</article>
 
-					<div>
+					{/* <div>
 						<br />
 						<Unantialiased>
 							<pre style={{ fontSize: 12 }}>{JSON.stringify({ range: state.range }, null, 2)}</pre>
 						</Unantialiased>
-					</div>
+					</div> */}
 
 					{/**/}
 				</Content>
