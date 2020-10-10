@@ -40,6 +40,9 @@ const methods = state => ({
 	},
 	pointerDown(offset) {
 		state.pointerDown = true
+		state.range.direction = "none"
+		state.range.start = offset
+		state.range.end = offset
 	},
 	pointerUp() {
 		state.pointerDown = false
