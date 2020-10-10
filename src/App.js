@@ -185,7 +185,7 @@ export default function App() {
 							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
 								offset = state.content.length
 							}
-							dispatch.pointerDown(offset)
+							dispatch.pointerDown(offset, { shiftKey: e.shiftKey })
 						}}
 						onPointerUp={e => {
 							dispatch.pointerUp()

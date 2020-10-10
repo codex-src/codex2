@@ -9,47 +9,53 @@ import {
 
 import useMethods from "use-methods"
 
+// prettier-ignore
+function setRangeFromOffset(state, offset) {
+	// Backwards:
+	if (state.range.direction === "none" && offset < state.range.end) {
+		state.range.direction = "backwards"
+		state.range.start = offset
+	} else if (state.range.direction === "backwards" && offset < state.range.end) {
+		state.range.start = offset
+	} else if (state.range.direction === "backwards" && offset > state.range.end) {
+		state.range.direction = "forwards"
+		state.range.start = state.range.end
+		state.range.end = offset
+	// Forwards:
+	} else if (state.range.direction === "none" && offset > state.range.start) {
+		state.range.direction = "forwards"
+		state.range.end = offset
+	} else if (state.range.direction === "forwards" && offset > state.range.start) {
+		state.range.end = offset
+	} else if (state.range.direction === "forwards" && offset < state.range.start) {
+		state.range.direction = "backwards"
+		state.range.end = state.range.start // Reverse order
+		state.range.start = offset
+	// Revert:
+	} else if (state.range.direction !== "none" && (offset === state.range.start || offset === state.range.end)) {
+		state.range.direction = "none"
+		state.range.start = offset
+		state.range.end = offset
+	}
+}
+
 const methods = state => ({
 	pointerMove(offset) {
 		if (!state.pointerDown) {
 			// No-op
 			return
 		}
-
-		// Backwards:
-		//
-		// prettier-ignore
-		if (state.range.direction === "none" && offset < state.range.end) {
-			state.range.direction = "backwards"
-			state.range.start = offset
-		} else if (state.range.direction === "backwards" && offset < state.range.end) {
-			state.range.start = offset
-		} else if (state.range.direction === "backwards" && offset > state.range.end) {
-			state.range.direction = "forwards"
-			state.range.start = state.range.end
-			state.range.end = offset
-		// Forwards:
-		} else if (state.range.direction === "none" && offset > state.range.start) {
-			state.range.direction = "forwards"
-			state.range.end = offset
-		} else if (state.range.direction === "forwards" && offset > state.range.start) {
-			state.range.end = offset
-		} else if (state.range.direction === "forwards" && offset < state.range.start) {
-			state.range.direction = "backwards"
-			state.range.end = state.range.start // Reverse order
-			state.range.start = offset
-		// Revert:
-		} else if (state.range.direction !== "none" && (offset === state.range.start || offset === state.range.end)) {
+		setRangeFromOffset(state, offset)
+	},
+	pointerDown(offset, { shiftKey }) {
+		state.pointerDown = true
+		if (!shiftKey) {
 			state.range.direction = "none"
 			state.range.start = offset
 			state.range.end = offset
+			return
 		}
-	},
-	pointerDown(offset) {
-		state.pointerDown = true
-		state.range.direction = "none"
-		state.range.start = offset
-		state.range.end = offset
+		setRangeFromOffset(state, offset)
 	},
 	pointerUp() {
 		state.pointerDown = false
