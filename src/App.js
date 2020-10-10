@@ -40,8 +40,9 @@ const Content = styled.div`
 `
 
 // https://codepen.io/ArtemGordinsky/pen/GnLBq
-const BlinkAnimation = keyframes`
-  from, to {
+const blink = keyframes`
+  10%,
+	90% {
     opacity: 100%;
   }
   50% {
@@ -58,7 +59,8 @@ const AbsoluteCaret = styled.span`
 	border-right: ${rem(2)} solid var(--caret-color);
 	border-radius: 9999px;
 	z-index: 20;
-	animation: ${BlinkAnimation} 1s step-end infinite;
+	animation: ${blink} 1s cubic-bezier(0, 1, 0, 1) infinite;
+	animation-play-state: ${props => props.animationPlayState};
 	pointer-events: none;
 	user-select: none;
 `
