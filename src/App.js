@@ -41,8 +41,8 @@ const Content = styled.div`
 
 // https://codepen.io/ArtemGordinsky/pen/GnLBq
 const blink = keyframes`
-  from,
-	to {
+  0%,
+	51% {
 		opacity: 100%;
   }
   50% {
@@ -64,7 +64,7 @@ const AbsoluteCaret = styled.span`
 	animation: ${props =>
 		!props.preventAnimation
 			? css`
-					${blink} 1s cubic-bezier(0, 0.75, 0, 0.75) infinite
+					${blink} 1s cubic-bezier(0, 1, 0, 1) infinite
 			  `
 			: "none"};
 	z-index: 20;
@@ -278,7 +278,7 @@ export default function App() {
 							{state.document.activeElement && (
 								<AbsoluteCaret
 									ref={caretRef}
-									left={state.document.range.__computed.end}
+									left={state.document.range.direction === "backwards" ? state.document.range.__computed.start : state.document.range.__computed.end}
 									// preventAnimation
 								/>
 							)}
