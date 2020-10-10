@@ -173,37 +173,19 @@ export default function App() {
 						}}
 						onPointerMove={e => {
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
-
-							let direction = "none"
-							if (caretRange.startOffset < caretRange.endOffset) {
-								direction = "backwards"
-							} else if (caretRange.startOffset > caretRange.endOffset) {
-								direction = "forwards"
-							}
-							let start = Math.min(caretRange.startOffset, caretRange.endOffset)
-							let end = Math.max(caretRange.startOffset, caretRange.endOffset)
+							let offset = caretRange.startOffset
 							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
-								start = state.content.length
-								end = state.content.length
+								offset = state.content.length
 							}
-							dispatch.pointerMove({ direction, start, end })
+							dispatch.pointerMove(offset)
 						}}
 						onPointerDown={e => {
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
-
-							let direction = "none"
-							if (caretRange.startOffset < caretRange.endOffset) {
-								direction = "backwards"
-							} else if (caretRange.startOffset > caretRange.endOffset) {
-								direction = "forwards"
-							}
-							let start = Math.min(caretRange.startOffset, caretRange.endOffset)
-							let end = Math.max(caretRange.startOffset, caretRange.endOffset)
+							let offset = caretRange.startOffset
 							if (caretRange.startContainer.nodeType !== Node.TEXT_NODE) {
-								start = state.content.length
-								end = state.content.length
+								offset = state.content.length
 							}
-							dispatch.pointerDown({ direction, start, end })
+							dispatch.pointerDown(offset)
 						}}
 						onPointerUp={e => {
 							dispatch.pointerUp()

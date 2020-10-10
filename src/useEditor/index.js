@@ -10,40 +10,25 @@ import {
 import useMethods from "use-methods"
 
 const methods = state => ({
-	// TODO: Add support for shiftKey?
-	pointerMove(range) {
+	pointerMove(offset) {
 		if (!state.pointerDown) {
 			// No-op
 			return
 		}
 		// state.range.end = range.end
 
-		if (range.start < state.range.end) {
+		if (offset < state.range.end) {
 			state.range.direction = "backwards"
-			state.range.start = range.start
-		} else if (range.start === state.range.end) {
+			state.range.start = offset
+		} else if (offset === state.range.end) {
 			state.range.direction = "none"
-			state.range.start = range.start
-			state.range.end = range.end
-		} // else if (range.start === state.range.start) {
-		// 	state.range.direction = "none"
-		// 	state.range.start = range.start
-		// 	state.range.end = range.end
-		// } else if (range.end > state.range.start) {
-		// 	state.range.direction = "forwards"
-		// 	state.range.end = range.end
-		// }
-
-		// if (range.direction === "backwards") {
-		// 	state.range.start = range.start
-		// } else if (range.direction === "forwards") {
-		// 	state.range.end = range.end
-		// }
+			state.range.start = offset
+			state.range.end = offset
+		}
 	},
-	// TODO: Add support for shiftKey?
-	pointerDown(range) {
+	pointerDown(offset) {
 		state.pointerDown = true
-		state.range = range
+		// state.range = range
 	},
 	pointerUp() {
 		state.pointerDown = false
