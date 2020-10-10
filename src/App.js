@@ -6,17 +6,6 @@ import styled, { css } from "styled-components"
 import rem from "rem"
 import useEditor from "useEditor"
 
-// const AbsoluteCaret = styled.span`
-// 	margin-left: ${rem(-1)};
-// 	position: absolute;
-// 	top: 0;
-// 	bottom: 0;
-// 	border-right: ${rem(2)} solid var(--caret-color);
-// 	border-radius: 9999px;
-// 	pointer-events: none;
-// 	user-select: none;
-// `
-
 function getKeyDownModKeys(e) {
 	const modKeys = {
 		shiftKey: e.shiftKey,
@@ -46,6 +35,50 @@ const Content = styled.div`
 	padding: ${rem(96)} ${rem(24)};
 	width: 100%;
 	max-width: ${rem(768)};
+`
+
+// // https://codepen.io/ArtemGordinsky/pen/GnLBq
+// const CursorBlink = keyframes`
+//   from, to {
+//     opacity: 100%;
+//   }
+//   50% {
+//     opacity: 0%;
+//   }
+// `
+// 	animation: ${props =>
+// 		!props.blink
+// 			? "none"
+// 			: css`
+// 					${CursorBlink} 1s step-end infinite
+// 			  `};
+
+const AbsoluteCaret = styled.span`
+	margin-left: ${rem(-1)};
+	position: absolute;
+	top: 0;
+	right: auto;
+	bottom: 0;
+	left: ${props => rem(props.left)};
+	border-right: ${rem(2)} solid var(--caret-color);
+	border-radius: 9999px;
+	z-index: 20;
+	pointer-events: none;
+	user-select: none;
+`
+
+const AbsoluteSelection = styled.span`
+	position: absolute;
+	top: 0;
+	right: auto;
+	bottom: 0;
+	left: ${props => rem(props.left)};
+	width: ${props => rem(props.width)};
+	background-color: ${props => props.backgroundColor};
+	/* borderRadius: rem(3); */
+	z-index: 0;
+	pointer-events: none;
+	user-select: none;
 `
 
 export default function App() {
@@ -113,7 +146,8 @@ export default function App() {
 					html {
 						--selection-color: hsla(210, 100%, 90%, 1);
 						--inactive-selection-color: hsla(210, 0%, 90%, 0.75);
-						--caret-color: hsla(210, 100%, 45%, 1);
+						/* --caret-color: hsla(210, 100%, 45%, 1); */
+						--caret-color: #000;
 					}
 				`}
 			</style>
@@ -222,24 +256,20 @@ export default function App() {
 					>
 						{/**/}
 
+						{/* left={state.document.range.__computed.end} */}
+						{/* state.document.range.__computed.start */}
+						{/* state.document.range.__computed.end - state.document.range.__computed.start */}
+						{/* active={!state.document.activeElement} */}
+
+						{/* prettier-ignore */}
 						<Relative style={{ height: rem(19 * 1.5) }}>
+
+							{/* Caret */}
 							{state.document.activeElement && (
-								<div
-									style={{
-										marginLeft: rem(-1),
-										position: "absolute",
-										top: 0,
-										right: "auto",
-										bottom: 0,
-										left: state.document.range.__computed.end,
-										borderRight: `${rem(2)} solid var(--caret-color)`,
-										/* borderRadius: 9999, */
-										zIndex: 20,
-										pointerEvents: "none",
-										userSelect: "none",
-									}}
-								/>
+								<AbsoluteCaret left={state.document.range.__computed.end} />
 							)}
+
+							{/* Content */}
 							<Absolute
 								style={{
 									// pointerEvents: "none",
@@ -249,26 +279,20 @@ export default function App() {
 							>
 								{state.document.content}
 							</Absolute>
-							{/* state.document.activeElement && */}
+
+							{/* Selection */}
 							{state.document.range.start !== state.document.range.end && (
-								<div
-									style={{
-										position: "absolute",
-										top: 0,
-										right: "auto",
-										bottom: 0,
-										left: state.document.range.__computed.start,
-										width: state.document.range.__computed.end - state.document.range.__computed.start,
-										backgroundColor: !state.document.activeElement
+								<AbsoluteSelection
+									left={state.document.range.__computed.start}
+									width={state.document.range.__computed.end - state.document.range.__computed.start}
+									backgroundColor={
+										!state.document.activeElement
 											? "var(--inactive-selection-color)"
-											: "var(--selection-color)",
-										/* borderRadius: rem(3), */
-										zIndex: 0,
-										pointerEvents: "none",
-										userSelect: "none",
-									}}
+											: "var(--selection-color)"
+									}
 								/>
 							)}
+
 						</Relative>
 
 						{/**/}
