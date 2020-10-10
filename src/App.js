@@ -1,22 +1,22 @@
 import "variables.css"
 
 import { Absolute, Relative } from "position"
+import { Antialiased, Unantialiased } from "Antialiasing"
 import React, { useCallback, useLayoutEffect, useRef, useState } from "react"
 import styled, { css, keyframes } from "styled-components"
 
-import { Antialiased } from "Antialiasing"
 import rem from "rem"
 import useEditor from "useEditor"
 
-function getKeyDownModKeys(e) {
-	const modKeys = {
-		shiftKey: e.shiftKey,
-		ctrlKey: e.ctrlKey,
-		altKey: e.altKey,
-		metaKey: e.metaKey,
-	}
-	return modKeys
-}
+// function getKeyDownModKeys(e) {
+// 	const modKeys = {
+// 		shiftKey: e.shiftKey,
+// 		ctrlKey: e.ctrlKey,
+// 		altKey: e.altKey,
+// 		metaKey: e.metaKey,
+// 	}
+// 	return modKeys
+// }
 
 const Center = styled.div`
 	display: flex;
@@ -214,17 +214,43 @@ export default function App() {
 						onFocus={e => {
 							dispatch.focus()
 						}}
+						// TODO: e.ctrlKey && e.key === "a"
 						onKeyDown={e => {
-							// prettier-ignore
-							const method = {
-								ArrowUp:    dispatch.keyDownArrowUp,
-								ArrowRight: dispatch.keyDownArrowRight,
-								ArrowDown:  dispatch.keyDownArrowDown,
-								ArrowLeft:  dispatch.keyDownArrowLeft,
-							}[e.key]
-							if (method) {
-								const modKeys = getKeyDownModKeys(e)
-								method(modKeys)
+							// const boundary = !e.altKey && e.metaKey
+							// 	? "char"
+							// 	: e.altKey
+							// 		? "word"
+							// 		: "line"
+
+							let boundary = "char"
+							if (e.altKey && !e.metaKey) {
+								boundary = "word"
+							} else if (e.metaKey && !e.altKey) {
+								boundary = "line"
+							}
+
+							if (e.key === "ArrowLeft") {
+								if (!e.shiftKey) {
+									dispatch.moveArrowLeft(boundary)
+								} else {
+									if (state.range.direction !== "forwards") {
+										dispatch.extendArrowToLeft(boundary)
+									} else {
+										dispatch.reduceArrowToLeft(boundary)
+									}
+								}
+							}
+
+							if (e.key === "ArrowRight") {
+								if (!e.shiftKey) {
+									dispatch.moveArrowRight(boundary)
+								} else {
+									if (state.range.direction !== "backwards") {
+										dispatch.extendArrowToRight(boundary)
+									} else {
+										dispatch.reduceArrowToRight(boundary)
+									}
+								}
 							}
 						}}
 						tabIndex={0}
@@ -265,12 +291,16 @@ export default function App() {
 						{/**/}
 					</article>
 
-					{/* <div>
-						<br />
+					<br />
+
+					{/* prettier-ignore */}
+					<div>
 						<Unantialiased>
-							<pre style={{ fontSize: 12 }}>{JSON.stringify({ range: state.range }, null, 2)}</pre>
+							<pre style={{ fontSize: 12 }}>
+								{JSON.stringify(state, null, 2)}
+							</pre>
 						</Unantialiased>
-					</div> */}
+					</div>
 
 					{/**/}
 				</Content>

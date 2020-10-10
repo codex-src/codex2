@@ -1,58 +1,7 @@
 import useMethods from "use-methods"
 
-function arrowLeft(state) {
-	state.range.direction = "none"
-	if (state.range.start) {
-		state.range.start--
-	}
-	state.range.end = state.range.start
-}
-
-function arrowRight(state) {
-	state.range.direction = "none"
-	if (state.range.end < state.content.length) {
-		state.range.end++
-	}
-	state.range.start = state.range.end
-}
-
-function arrowLeftExtend(state) {
-	if (state.range.start) {
-		if (state.range.start === state.range.end) {
-			state.range.direction = "backwards"
-		}
-		state.range.start--
-	}
-}
-
-function arrowRightExtend(state) {
-	if (state.range.end < state.content.length) {
-		if (state.range.start === state.range.end) {
-			state.range.direction = "forwards"
-		}
-		state.range.end++
-	}
-}
-
-function arrowLeftReduce(state) {
-	if (state.range.end) {
-		state.range.end--
-		if (state.range.start === state.range.end) {
-			state.range.direction = "none"
-		}
-	}
-}
-
-function arrowRightReduce(state) {
-	if (state.range.start < state.content.length) {
-		state.range.start++
-		if (state.range.start === state.range.end) {
-			state.range.direction = "none"
-		}
-	}
-}
-
 const methods = state => ({
+	// TODO: Add support for shiftKey?
 	pointerMove(range) {
 		if (!state.pointer.down) {
 			// No-op
@@ -60,6 +9,7 @@ const methods = state => ({
 		}
 		state.range = range
 	},
+	// TODO: Add support for shiftKey?
 	pointerDown(range) {
 		state.pointerDown = true
 		state.range = range
@@ -68,35 +18,6 @@ const methods = state => ({
 		state.pointerDown = false
 	},
 
-	//	pointerMove({ coords, range }) {
-	//		state.pointer.x = coords.x
-	//		state.pointer.y = coords.y
-	//		// state.pointer.down = true
-	//
-	//		if (!state.pointer.down) {
-	//			// No-op
-	//			return
-	//		}
-	//
-	//		// TODO: Add state.direction values here?
-	//		// TODO: Add support for shiftKey?
-	//		state.range.start = range.start
-	//		// state.range.end = range.end
-	//	},
-	//	pointerDown({ coords, range }) {
-	//		state.pointer.x = coords.x
-	//		state.pointer.y = coords.y
-	//		state.pointer.down = true
-	//
-	//		// TODO: Add state.direction values here?
-	//		// TODO: Add support for shiftKey?
-	//		state.range.start = range.start
-	//		state.range.end = range.end
-	//	},
-	// pointerUp() {
-	// 	state.pointer.down = false
-	// },
-
 	focus() {
 		state.activeElement = true
 	},
@@ -104,34 +25,41 @@ const methods = state => ({
 		state.activeElement = false
 	},
 
-	keyDownArrowUp(modKeys) {
-		// TODO
+	moveArrowLeft(boundary) {
+		state.range.direction = "none"
+		state.range.start = Math.max(0, state.range.start - 1)
+		state.range.end = state.range.start
 	},
-	keyDownArrowDown(modKeys) {
-		// TODO
+	moveArrowRight(boundary) {
+		state.range.direction = "none"
+		state.range.end = Math.min(state.range.end + 1, state.content.length)
+		state.range.start = state.range.end
 	},
-	keyDownArrowLeft(modKeys) {
-		// if (!modKeys.shiftKey) {
-		// 	arrowLeft(state)
-		// } else {
-		// 	// arrowLeftExtend(state)
-		// 	if (state.range.direction === "forwards") {
-		// 		arrowLeftReduce(state)
-		// 	} else {
-		// 		arrowLeftExtend(state)
-		// 	}
-		// }
+
+	extendArrowToLeft(boundary) {
+		if (state.range.start - 1 >= 0 && state.range.start - 1 < state.range.end) {
+			state.range.direction = "backwards"
+		}
+		state.range.start = Math.max(0, state.range.start - 1)
 	},
-	keyDownArrowRight(modKeys) {
-		// if (!modKeys.shiftKey) {
-		// 	arrowRight(state)
-		// } else {
-		// 	if (state.range.direction === "backwards") {
-		// 		arrowRightReduce(state)
-		// 	} else {
-		// 		arrowRightExtend(state)
-		// 	}
-		// }
+	extendArrowToRight(boundary) {
+		if (state.range.end + 1 < state.content.length && state.range.end + 1 > state.range.start) {
+			state.range.direction = "forwards"
+		}
+		state.range.end = Math.min(state.range.end + 1, state.content.length)
+	},
+
+	reduceArrowToLeft(boundary) {
+		if (state.range.end - 1 >= 0 && state.range.end - 1 === state.range.start) {
+			state.range.direction = "none"
+		}
+		state.range.end = Math.max(0, state.range.end - 1)
+	},
+	reduceArrowToRight(boundary) {
+		if (state.range.start + 1 < state.content.length && state.range.start + 1 === state.range.end) {
+			state.range.direction = "none"
+		}
+		state.range.start = Math.min(state.range.start + 1, state.content.length)
 	},
 })
 
