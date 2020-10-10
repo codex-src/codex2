@@ -1,0 +1,5 @@
+html {
+	--selection-color: hsl(195, 100%, 90%);
+	--inactive-selection-color: hsla(195, 0%, 90%, 0.75);
+	--caret-color: hsl(195, 100%, 45%);
+}

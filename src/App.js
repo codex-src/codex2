@@ -1,7 +1,9 @@
+import "variables.css"
+
 import { Absolute, Relative } from "position"
 import { Antialiased, Unantialiased } from "Antialiasing"
 import React, { useCallback, useLayoutEffect, useRef } from "react"
-import styled, { css } from "styled-components"
+import styled, { keyframes } from "styled-components"
 
 import rem from "rem"
 import useEditor from "useEditor"
@@ -37,22 +39,15 @@ const Content = styled.div`
 	max-width: ${rem(768)};
 `
 
-// // https://codepen.io/ArtemGordinsky/pen/GnLBq
-// const CursorBlink = keyframes`
-//   from, to {
-//     opacity: 100%;
-//   }
-//   50% {
-//     opacity: 0%;
-//   }
-// `
-// 	animation: ${props =>
-// 		!props.blink
-// 			? "none"
-// 			: css`
-// 					${CursorBlink} 1s step-end infinite
-// 			  `};
-
+// https://codepen.io/ArtemGordinsky/pen/GnLBq
+const BlinkAnimation = keyframes`
+  from, to {
+    opacity: 100%;
+  }
+  50% {
+    opacity: 0%;
+  }
+`
 const AbsoluteCaret = styled.span`
 	margin-left: ${rem(-1)};
 	position: absolute;
@@ -63,6 +58,7 @@ const AbsoluteCaret = styled.span`
 	border-right: ${rem(2)} solid var(--caret-color);
 	border-radius: 9999px;
 	z-index: 20;
+	animation: ${BlinkAnimation} 1s step-end infinite;
 	pointer-events: none;
 	user-select: none;
 `
@@ -75,7 +71,7 @@ const AbsoluteSelection = styled.span`
 	left: ${props => rem(props.left)};
 	width: ${props => rem(props.width)};
 	background-color: ${props => props.backgroundColor};
-	/* borderRadius: rem(3); */
+	border-radius: ${rem(3)};
 	z-index: 0;
 	pointer-events: none;
 	user-select: none;
@@ -140,17 +136,6 @@ export default function App() {
 	return (
 		<Antialiased>
 			{/**/}
-
-			<style>
-				{css`
-					html {
-						--selection-color: hsla(210, 100%, 90%, 1);
-						--inactive-selection-color: hsla(210, 0%, 90%, 0.75);
-						/* --caret-color: hsla(210, 100%, 45%, 1); */
-						--caret-color: #000;
-					}
-				`}
-			</style>
 
 			<Absolute top left sty>
 				<div ref={measureRef} />
