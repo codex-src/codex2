@@ -15,23 +15,30 @@ const methods = state => ({
 			// No-op
 			return
 		}
-		// Create backwards range:
+
+		// Backwards:
 		//
 		// prettier-ignore
 		if (state.range.direction === "none" && offset < state.range.end) {
 			state.range.direction = "backwards"
 			state.range.start = offset
-		// Create forwards range:
+		} else if (state.range.direction === "backwards" && offset < state.range.end) {
+			state.range.start = offset
+		} else if (state.range.direction === "backwards" && offset > state.range.end) {
+			state.range.direction = "forwards"
+			state.range.start = state.range.end
+			state.range.end = offset
+		// Forwards:
 		} else if (state.range.direction === "none" && offset > state.range.start) {
 			state.range.direction = "forwards"
 			state.range.end = offset
-		// Extend backwards range:
-		} else if (state.range.direction === "backwards" && offset < state.range.end) {
-			state.range.start = offset
-		// Extend forwards range:
 		} else if (state.range.direction === "forwards" && offset > state.range.start) {
 			state.range.end = offset
-		// Revert range:
+		} else if (state.range.direction === "forwards" && offset < state.range.start) {
+			state.range.direction = "backwards"
+			state.range.end = state.range.start // Reverse order
+			state.range.start = offset
+		// Revert:
 		} else if (state.range.direction !== "none" && (offset === state.range.start || offset === state.range.end)) {
 			state.range.direction = "none"
 			state.range.start = offset
