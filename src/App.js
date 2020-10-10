@@ -6,7 +6,6 @@ import React, { useCallback, useLayoutEffect, useRef } from "react"
 import styled, { keyframes } from "styled-components"
 
 import rem from "rem"
-import sleep from "sleep"
 import useEditor from "useEditor"
 
 function getKeyDownModKeys(e) {
@@ -42,8 +41,8 @@ const Content = styled.div`
 
 // https://codepen.io/ArtemGordinsky/pen/GnLBq
 const blink = keyframes`
-  10%,
-	90% {
+  from,
+	to {
 		opacity: 100%;
   }
   50% {
@@ -60,7 +59,7 @@ const AbsoluteCaret = styled.span`
 	left: ${props => rem(props.left)};
 	border-right: ${rem(2)} solid var(--caret-color);
 	border-radius: 9999px;
-	animation: ${blink} 1s cubic-bezier(0, 1, 0, 1) infinite;
+	animation: ${blink} 1s cubic-bezier(0, 0.75, 0, 0.75) infinite;
 	z-index: 20;
 	pointer-events: none;
 	user-select: none;
