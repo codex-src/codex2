@@ -6,6 +6,7 @@ import React, { useCallback, useLayoutEffect, useRef } from "react"
 import styled, { keyframes } from "styled-components"
 
 import rem from "rem"
+import sleep from "sleep"
 import useEditor from "useEditor"
 
 function getKeyDownModKeys(e) {
@@ -49,6 +50,7 @@ const blink = keyframes`
     opacity: 0%;
   }
 `
+
 const AbsoluteCaret = styled.span`
 	margin-left: ${rem(-1)};
 	position: absolute;
@@ -58,9 +60,8 @@ const AbsoluteCaret = styled.span`
 	left: ${props => rem(props.left)};
 	border-right: ${rem(2)} solid var(--caret-color);
 	border-radius: 9999px;
-	z-index: 20;
 	animation: ${blink} 1s cubic-bezier(0, 1, 0, 1) infinite;
-	animation-play-state: ${props => props.animationPlayState};
+	z-index: 20;
 	pointer-events: none;
 	user-select: none;
 `
@@ -86,18 +87,26 @@ export default function App() {
 	const [state, dispatch] = useEditor("Hello, world!")
 
 	const caretRef = React.useRef(null)
-	const [animationPlayState, setAnimationPlayState] = React.useState("paused")
+
+	// React.useEffect(() => {
+	// 	const DURATION = 1e3
+	// 	console.log("on")
+	// 	const itv = setInterval(() => {
+	// 		console.log("off")
+	// 		setTimeout(() => {
+	// 			console.log("on")
+	// 		}, DURATION / 2)
+	// 	}, DURATION)
+	// 	return () => {
+	// 		clearInterval(itv)
+	// 	}
+	// }, [state.document.range.start])
 
 	React.useEffect(() => {
-		if (!caretRef.current) {
-			// No-op
-			return
-		}
-		const originalAnimation = window.getComputedStyle(caretRef.current).animation
 		caretRef.current.style.animation = "none"
 		const id = setTimeout(() => {
-			caretRef.current.style.animation = originalAnimation
-		}, 25)
+			caretRef.current.style.animation = ""
+		}, 250)
 		return () => {
 			clearTimeout(id)
 		}
@@ -274,7 +283,6 @@ export default function App() {
 								<AbsoluteCaret
 									ref={caretRef}
 									left={state.document.range.__computed.end}
-									// animationPlayState={animationPlayState}
 								/>
 							{/* )} */}
 
@@ -305,13 +313,12 @@ export default function App() {
 						{/**/}
 					</article>
 
-					{/* prettier-ignore */}
-					<div>
+					{/* <div>
 						<br />
 						<Unantialiased>
 							<pre style={{ fontSize: 12 }}>{JSON.stringify(state, null, 2)}</pre>
 						</Unantialiased>
-					</div>
+					</div> */}
 				</Content>
 			</Center>
 
