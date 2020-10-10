@@ -90,7 +90,7 @@ export default function App() {
 	const articleRef = useRef(null)
 	const measureRef = useRef(null)
 
-	const [state, dispatch] = useEditor("Hello, world!")
+	const [state, dispatch] = useEditor("Veniam sunt sunt nisi est enim elit eiusmod do reprehenderit minim.")
 
 	const caretRef = React.useRef(null)
 

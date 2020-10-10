@@ -66,13 +66,13 @@ const methods = state => ({
 		if (!state.pointer.down) {
 			// No-op
 			return
-		} else if (coords.y < state.layout.top || coords.y > state.layout.bottom) {
-			// No-op
-			return
-		} else if (coords.x < state.layout.left || coords.x > state.layout.right) {
-			// No-op
-			return
-		}
+		} // else if (coords.y < state.layout.top || coords.y > state.layout.bottom) {
+		// 	// No-op
+		// 	return
+		// } else if (coords.x < state.layout.left || coords.x > state.layout.right) {
+		// 	// No-op
+		// 	return
+		// }
 
 		// TODO: Add state.document.direction values here?
 		// TODO: Add support for shiftKey?
