@@ -43,7 +43,7 @@ const Content = styled.div`
 const blink = keyframes`
   10%,
 	90% {
-    opacity: 100%;
+		opacity: 100%;
   }
   50% {
     opacity: 0%;
@@ -84,6 +84,24 @@ export default function App() {
 	const measureRef = useRef(null)
 
 	const [state, dispatch] = useEditor("Hello, world!")
+
+	const caretRef = React.useRef(null)
+	const [animationPlayState, setAnimationPlayState] = React.useState("paused")
+
+	React.useEffect(() => {
+		if (!caretRef.current) {
+			// No-op
+			return
+		}
+		const originalAnimation = window.getComputedStyle(caretRef.current).animation
+		caretRef.current.style.animation = "none"
+		const id = setTimeout(() => {
+			caretRef.current.style.animation = originalAnimation
+		}, 25)
+		return () => {
+			clearTimeout(id)
+		}
+	}, [state.document.range.start])
 
 	React.useLayoutEffect(() => {
 		const handler = e => {
@@ -252,9 +270,13 @@ export default function App() {
 						<Relative style={{ height: rem(19 * 1.5) }}>
 
 							{/* Caret */}
-							{state.document.activeElement && (
-								<AbsoluteCaret left={state.document.range.__computed.end} />
-							)}
+							{/* {state.document.activeElement && ( */}
+								<AbsoluteCaret
+									ref={caretRef}
+									left={state.document.range.__computed.end}
+									// animationPlayState={animationPlayState}
+								/>
+							{/* )} */}
 
 							{/* Content */}
 							<Absolute
@@ -267,15 +289,13 @@ export default function App() {
 								{state.document.content}
 							</Absolute>
 
-							{/* Selection */}
+							{/* Range */}
 							{state.document.range.start !== state.document.range.end && (
 								<AbsoluteSelection
 									left={state.document.range.__computed.start}
 									width={state.document.range.__computed.end - state.document.range.__computed.start}
 									backgroundColor={
-										!state.document.activeElement
-											? "var(--inactive-selection-color)"
-											: "var(--selection-color)"
+										!state.document.activeElement ? "var(--inactive-selection-color)" : "var(--selection-color)"
 									}
 								/>
 							)}
