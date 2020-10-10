@@ -15,20 +15,44 @@ const methods = state => ({
 			// No-op
 			return
 		}
-		// state.range.end = range.end
 
-		if (offset < state.range.end) {
+		// if (offset < state.range.end) {
+		// 	state.range.direction = "backwards"
+		// 	state.range.start = offset
+		// } else if (offset === state.range.end) {
+		// 	state.range.direction = "none"
+		// 	state.range.start = offset
+		// 	state.range.end = offset
+		// }
+
+		if (state.range.direction === "none" && offset < state.range.end) {
 			state.range.direction = "backwards"
 			state.range.start = offset
-		} else if (offset === state.range.end) {
-			state.range.direction = "none"
-			state.range.start = offset
+		} else if (state.range.direction === "none" && offset > state.range.start) {
+			state.range.direction = "forwards"
 			state.range.end = offset
 		}
+
+		if (state.range.direction === "backwards" && offset < state.range.end) {
+			state.range.start = offset
+		} else if (state.range.direction === "forwards" && offset > state.range.start) {
+			state.range.end = offset
+		}
+
+		// if (offset < state.range.end) {
+		// 	state.range.direction = "backwards"
+		// 	state.range.start = offset
+		// } else if (offset === state.range.start) {
+		// 	state.range.direction = "none"
+		// 	state.range.start = offset
+		// 	state.range.end = offset
+		// } else if (offset > state.range.start) {
+		// 	state.range.direction = "forwards"
+		// 	state.range.end = offset
+		// }
 	},
 	pointerDown(offset) {
 		state.pointerDown = true
-		// state.range = range
 	},
 	pointerUp() {
 		state.pointerDown = false
