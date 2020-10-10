@@ -40,15 +40,22 @@ const blink = keyframes`
   }
 `
 
-const AbsoluteCaret = styled.span`
+// const Component = styled.div.attrs(props => ({
+// 	style: {
+// 		background: props.background,
+// 	},
+// }))`width: 100%;`
+
+const AbsoluteCaret = styled.span.attrs(props => ({
+	style: {
+		left: rem(props.left),
+	},
+}))`
 	margin-left: ${rem(-1)};
 	position: absolute;
 	top: 0;
-	right: auto;
 	bottom: 0;
-	left: ${props => rem(props.left)};
 	width: ${rem(2)};
-	/* background-color: ${props => props.backgroundColor}; */
 	background-color: var(--caret-color);
 	border-radius: 9999px;
 	animation: ${props =>
@@ -62,13 +69,15 @@ const AbsoluteCaret = styled.span`
 	user-select: none;
 `
 
-const AbsoluteSelection = styled.span`
+const AbsoluteSelection = styled.span.attrs(props => ({
+	style: {
+		left: rem(props.left),
+		width: rem(props.width),
+	},
+}))`
 	position: absolute;
 	top: 0;
-	right: auto;
 	bottom: 0;
-	left: ${props => rem(props.left)};
-	width: ${props => rem(props.width)};
 	background-color: ${props => props.backgroundColor};
 	border-radius: ${rem(3)};
 	z-index: 0;
