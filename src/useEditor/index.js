@@ -15,41 +15,28 @@ const methods = state => ({
 			// No-op
 			return
 		}
-
-		// if (offset < state.range.end) {
-		// 	state.range.direction = "backwards"
-		// 	state.range.start = offset
-		// } else if (offset === state.range.end) {
-		// 	state.range.direction = "none"
-		// 	state.range.start = offset
-		// 	state.range.end = offset
-		// }
-
+		// Create backwards range:
+		//
+		// prettier-ignore
 		if (state.range.direction === "none" && offset < state.range.end) {
 			state.range.direction = "backwards"
 			state.range.start = offset
+		// Create forwards range:
 		} else if (state.range.direction === "none" && offset > state.range.start) {
 			state.range.direction = "forwards"
 			state.range.end = offset
-		}
-
-		if (state.range.direction === "backwards" && offset < state.range.end) {
+		// Extend backwards range:
+		} else if (state.range.direction === "backwards" && offset < state.range.end) {
 			state.range.start = offset
+		// Extend forwards range:
 		} else if (state.range.direction === "forwards" && offset > state.range.start) {
 			state.range.end = offset
+		// Revert range:
+		} else if (state.range.direction !== "none" && (offset === state.range.start || offset === state.range.end)) {
+			state.range.direction = "none"
+			state.range.start = offset
+			state.range.end = offset
 		}
-
-		// if (offset < state.range.end) {
-		// 	state.range.direction = "backwards"
-		// 	state.range.start = offset
-		// } else if (offset === state.range.start) {
-		// 	state.range.direction = "none"
-		// 	state.range.start = offset
-		// 	state.range.end = offset
-		// } else if (offset > state.range.start) {
-		// 	state.range.direction = "forwards"
-		// 	state.range.end = offset
-		// }
 	},
 	pointerDown(offset) {
 		state.pointerDown = true
