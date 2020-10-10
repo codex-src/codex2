@@ -1,5 +1,48 @@
 import useMethods from "use-methods"
 
+function arrowLeft(state) {
+	state.document.range.direction = "none"
+	if (state.document.range.start) {
+		state.document.range.start--
+	}
+	state.document.range.end = state.document.range.start
+}
+
+function arrowRight(state) {
+	state.document.range.direction = "none"
+	if (state.document.range.end < state.document.content.length) {
+		state.document.range.end++
+	}
+	state.document.range.start = state.document.range.end
+}
+
+function arrowLeftExtend(state) {
+	if (state.document.range.start) {
+		if (state.document.range.start === state.document.range.end) {
+			state.document.range.direction = "backwards"
+		}
+		state.document.range.start--
+	}
+}
+
+function arrowRightExtend(state) {
+	if (state.document.range.end < state.document.content.length) {
+		if (state.document.range.start === state.document.range.end) {
+			state.document.range.direction = "forwards"
+		}
+		state.document.range.end++
+	}
+}
+
+function arrowRightReduce(state) {
+	if (state.document.range.start < state.document.content.length) {
+		state.document.range.start++
+		if (state.document.range.start === state.document.range.end) {
+			state.document.range.direction = "none"
+		}
+	}
+}
+
 const methods = state => ({
 	resize(layout) {
 		state.layout = layout
@@ -55,80 +98,28 @@ const methods = state => ({
 		state.document.activeElement = false
 	},
 
-	// dir=up
-	// dir=right
-	// dir=down
-	// dir=left
-	// boundary=rune
-	// boundary=word
-	// boundary=line
-	// boundary=node
-	// boundary=page
-	//
 	keyDownArrowUp(modKeys) {
 		// TODO
 	},
 	keyDownArrowDown(modKeys) {
 		// TODO
 	},
-	// keyDownArrowLeft(modKeys) {
-	// 	// state.document.range.direction = "start"
-	// 	if (state.document.range.start > 0) {
-	// 		state.document.range.start--
-	// 		state.document.range.end--
-	// 	}
-	// },
-	// keyDownArrowRight(modKeys) {
-	// 	// state.document.range.direction = "start"
-	// 	if (state.document.range.end < state.document.content.length) {
-	// 		state.document.range.start++
-	// 		state.document.range.end++
-	// 	}
-	// },
 	keyDownArrowLeft(modKeys) {
-		function arrowLeft() {
-			state.document.range.direction = "none"
-			if (state.document.range.start) {
-				state.document.range.start--
-			}
-			state.document.range.end = state.document.range.start
-		}
-		function extendArrowLeft() {
-			if (state.document.range.start) {
-				if (state.document.range.start === state.document.range.end) {
-					state.document.range.direction = "backwards"
-				}
-				state.document.range.start--
-			}
-		}
-
 		if (!modKeys.shiftKey) {
-			arrowLeft()
+			arrowLeft(state)
 		} else {
-			extendArrowLeft()
+			arrowLeftExtend(state)
 		}
 	},
 	keyDownArrowRight(modKeys) {
-		function arrowRight() {
-			state.document.range.direction = "none"
-			if (state.document.range.end < state.document.content.length) {
-				state.document.range.end++
-			}
-			state.document.range.start = state.document.range.end
-		}
-		function extendArrowRight() {
-			if (state.document.range.end < state.document.content.length) {
-				if (state.document.range.start === state.document.range.end) {
-					state.document.range.direction = "forwards"
-				}
-				state.document.range.end++
-			}
-		}
-
 		if (!modKeys.shiftKey) {
-			arrowRight()
+			arrowRight(state)
 		} else {
-			extendArrowRight()
+			if (state.document.range.direction === "backwards") {
+				arrowRightReduce(state)
+			} else {
+				arrowRightExtend(state)
+			}
 		}
 	},
 

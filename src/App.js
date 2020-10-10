@@ -266,45 +266,35 @@ export default function App() {
 					>
 						{/**/}
 
-						{/* left={state.document.range.__computed.end} */}
-						{/* state.document.range.__computed.start */}
-						{/* state.document.range.__computed.end - state.document.range.__computed.start */}
-						{/* active={!state.document.activeElement} */}
-
-						{/* prettier-ignore */}
 						<Relative style={{ height: rem(19 * 1.5) }}>
+							{/**/}
 
-							{/* Caret */}
 							{state.document.activeElement && (
 								<AbsoluteCaret
 									ref={caretRef}
-									left={state.document.range.direction === "backwards" ? state.document.range.__computed.start : state.document.range.__computed.end}
-									// preventAnimation
+									left={
+										// prettier-ignore
+										state.document.range.direction === "backwards"
+											? state.document.range.__computed.start
+											: state.document.range.__computed.end
+									}
 								/>
 							)}
 
-							{/* Content */}
-							<Absolute
-								style={{
-									// pointerEvents: "none",
-									// userSelect: "none",
-									zIndex: 10,
-								}}
-							>
-								{state.document.content}
-							</Absolute>
+							<Absolute style={{ zIndex: 10 }}>{state.document.content}</Absolute>
 
-							{/* Range */}
 							{state.document.range.start !== state.document.range.end && (
 								<AbsoluteSelection
 									left={state.document.range.__computed.start}
 									width={state.document.range.__computed.end - state.document.range.__computed.start}
 									backgroundColor={
-										!state.document.activeElement ? "var(--inactive-selection-color)" : "var(--selection-color)"
+										// prettier-ignore
+										!state.document.activeElement
+											? "var(--inactive-selection-color)"
+											: "var(--selection-color)"
 									}
 								/>
 							)}
-
 						</Relative>
 
 						{/**/}
@@ -316,6 +306,8 @@ export default function App() {
 							<pre style={{ fontSize: 12 }}>{JSON.stringify({ range: state.document.range }, null, 2)}</pre>
 						</Unantialiased>
 					</div>
+
+					{/**/}
 				</Content>
 			</Center>
 
