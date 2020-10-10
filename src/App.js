@@ -58,7 +58,8 @@ const AbsoluteCaret = styled.span`
 	bottom: 0;
 	left: ${props => rem(props.left)};
 	width: ${rem(2)};
-	background-color: ${props => props.backgroundColor};
+	/* background-color: ${props => props.backgroundColor}; */
+	background-color: var(--caret-color);
 	border-radius: 9999px;
 	animation: ${props =>
 		!props.preventAnimation
@@ -108,6 +109,10 @@ export default function App() {
 	// }, [state.document.range.start])
 
 	React.useEffect(() => {
+		if (!state.document.activeElement) {
+			// No-op
+			return
+		}
 		const open = state.document.range.start !== state.document.range.end
 		if (!open) {
 			caretRef.current.style.animation = "none"
@@ -120,7 +125,7 @@ export default function App() {
 		} else {
 			caretRef.current.style.animation = "none"
 		}
-	}, [state.document.range.start, state.document.range.end])
+	}, [state.document.activeElement, state.document.range.start, state.document.range.end])
 
 	React.useLayoutEffect(() => {
 		const handler = e => {
@@ -269,16 +274,13 @@ export default function App() {
 						<Relative style={{ height: rem(19 * 1.5) }}>
 
 							{/* Caret */}
-							{/* {state.document.activeElement && ( */}
+							{state.document.activeElement && (
 								<AbsoluteCaret
 									ref={caretRef}
 									left={state.document.range.__computed.end}
-									backgroundColor={
-										!state.document.activeElement ? "var(--inactive-caret-color)" : "var(--caret-color)"
-									}
 									// preventAnimation
 								/>
-							{/* )} */}
+							)}
 
 							{/* Content */}
 							<Absolute
