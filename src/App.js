@@ -224,39 +224,35 @@ export default function App() {
 						}}
 						// TODO: e.ctrlKey && e.key === "a"
 						onKeyDown={e => {
-							// const boundary = !e.altKey && e.metaKey
-							// 	? "char"
-							// 	: e.altKey
-							// 		? "word"
-							// 		: "line"
+							// let boundary = "char"
+							// if (e.altKey && !e.metaKey) {
+							// 	boundary = "word"
+							// } else if (e.metaKey && !e.altKey) {
+							// 	boundary = "line"
+							// }
 
-							let boundary = "char"
-							if (e.altKey && !e.metaKey) {
-								boundary = "word"
-							} else if (e.metaKey && !e.altKey) {
-								boundary = "line"
-							}
-
+							// TODO: Add boundary.
 							if (e.key === "ArrowLeft") {
 								if (!e.shiftKey) {
-									dispatch.moveArrowLeft(boundary)
+									dispatch.moveArrowLeft()
 								} else {
 									if (state.range.direction !== "forwards") {
-										dispatch.extendArrowToLeft(boundary)
+										dispatch.extendArrowToLeft()
 									} else {
-										dispatch.reduceArrowToLeft(boundary)
+										dispatch.reduceArrowToLeft()
 									}
 								}
 							}
 
+							// TODO: Add boundary.
 							if (e.key === "ArrowRight") {
 								if (!e.shiftKey) {
-									dispatch.moveArrowRight(boundary)
+									dispatch.moveArrowRight()
 								} else {
 									if (state.range.direction !== "backwards") {
-										dispatch.extendArrowToRight(boundary)
+										dispatch.extendArrowToRight()
 									} else {
-										dispatch.reduceArrowToRight(boundary)
+										dispatch.reduceArrowToRight()
 									}
 								}
 							}
