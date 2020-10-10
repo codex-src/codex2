@@ -11,31 +11,33 @@ import useMethods from "use-methods"
 
 // prettier-ignore
 function setRangeFromOffset(state, offset) {
+	// None:
+	if (state.range.direction === "none") {
+		if (offset < state.range.start) {
+			state.range.direction = "backwards"
+			state.range.start = offset
+		} else if (offset > state.range.start) {
+			state.range.direction = "forwards"
+			state.range.end = offset
+		}
 	// Backwards:
-	if (state.range.direction === "none" && offset < state.range.end) {
-		state.range.direction = "backwards"
-		state.range.start = offset
-	} else if (state.range.direction === "backwards" && offset < state.range.end) {
-		state.range.start = offset
-	} else if (state.range.direction === "backwards" && offset > state.range.end) {
-		state.range.direction = "forwards"
-		state.range.start = state.range.end
-		state.range.end = offset
+	} else if (state.range.direction === "backwards") {
+		if (offset < state.range.end) {
+			state.range.start = offset
+		} else {
+			state.range.direction = offset === state.range.end ? "none" : "forwards"
+			state.range.start = state.range.end
+			state.range.end = offset
+		}
 	// Forwards:
-	} else if (state.range.direction === "none" && offset > state.range.start) {
-		state.range.direction = "forwards"
-		state.range.end = offset
-	} else if (state.range.direction === "forwards" && offset > state.range.start) {
-		state.range.end = offset
-	} else if (state.range.direction === "forwards" && offset < state.range.start) {
-		state.range.direction = "backwards"
-		state.range.end = state.range.start // Reverse order
-		state.range.start = offset
-	// Revert:
-	} else if (state.range.direction !== "none" && (offset === state.range.start || offset === state.range.end)) {
-		state.range.direction = "none"
-		state.range.start = offset
-		state.range.end = offset
+	} else if (state.range.direction === "forwards") {
+		if (offset > state.range.start) {
+			state.range.end = offset
+		} else if (offset <= state.range.start) {
+			state.range.direction = offset === state.range.start ? "none" : "backwards"
+			state.range.end = state.range.start // Reverse order
+			state.range.start = offset
+		}
 	}
 }
 
