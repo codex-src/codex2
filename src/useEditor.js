@@ -34,6 +34,15 @@ function arrowRightExtend(state) {
 	}
 }
 
+function arrowLeftReduce(state) {
+	if (state.document.range.end) {
+		state.document.range.end--
+		if (state.document.range.start === state.document.range.end) {
+			state.document.range.direction = "none"
+		}
+	}
+}
+
 function arrowRightReduce(state) {
 	if (state.document.range.start < state.document.content.length) {
 		state.document.range.start++
@@ -108,7 +117,12 @@ const methods = state => ({
 		if (!modKeys.shiftKey) {
 			arrowLeft(state)
 		} else {
-			arrowLeftExtend(state)
+			// arrowLeftExtend(state)
+			if (state.document.range.direction === "forwards") {
+				arrowLeftReduce(state)
+			} else {
+				arrowLeftExtend(state)
+			}
 		}
 	},
 	keyDownArrowRight(modKeys) {
