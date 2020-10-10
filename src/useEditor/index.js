@@ -9,10 +9,8 @@ import {
 
 import useMethods from "use-methods"
 
-// prettier-ignore
 function setRangeFromOffset(state, offset) {
-	// None:
-	if (state.range.direction === "none") {
+	function handleNone() {
 		if (offset < state.range.start) {
 			state.range.direction = "backwards"
 			state.range.start = offset
@@ -20,8 +18,8 @@ function setRangeFromOffset(state, offset) {
 			state.range.direction = "forwards"
 			state.range.end = offset
 		}
-	// Backwards:
-	} else if (state.range.direction === "backwards") {
+	}
+	function handleBackwards() {
 		if (offset < state.range.end) {
 			state.range.start = offset
 		} else {
@@ -29,8 +27,8 @@ function setRangeFromOffset(state, offset) {
 			state.range.start = state.range.end
 			state.range.end = offset
 		}
-	// Forwards:
-	} else if (state.range.direction === "forwards") {
+	}
+	function handleForwards() {
 		if (offset > state.range.start) {
 			state.range.end = offset
 		} else if (offset <= state.range.start) {
@@ -39,6 +37,13 @@ function setRangeFromOffset(state, offset) {
 			state.range.start = offset
 		}
 	}
+	// prettier-ignore
+	const handler = {
+		"none":      handleNone,
+		"backwards": handleBackwards,
+		"forwards":  handleForwards,
+	}[state.range.direction]
+	handler()
 }
 
 const methods = state => ({
@@ -71,7 +76,6 @@ const methods = state => ({
 	},
 
 	// TODO: Add boundary.
-
 	moveArrowLeft() {
 		moveArrowLeft(state)
 	},
