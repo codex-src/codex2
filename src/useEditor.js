@@ -138,6 +138,7 @@ const initialState = {
 			// direction: "start", // TODO
 			start: 0,
 			end: 0,
+			// TODO: Move computed to state.__computed.range?
 			__computed: {
 				left: 0,
 				right: 0,

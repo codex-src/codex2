@@ -57,7 +57,8 @@ const AbsoluteCaret = styled.span`
 	right: auto;
 	bottom: 0;
 	left: ${props => rem(props.left)};
-	border-right: ${rem(2)} solid var(--caret-color);
+	width: ${rem(2)};
+	background-color: ${props => props.backgroundColor};
 	border-radius: 9999px;
 	animation: ${blink} 1s cubic-bezier(0, 0.75, 0, 0.75) infinite;
 	z-index: 20;
@@ -102,14 +103,19 @@ export default function App() {
 	// }, [state.document.range.start])
 
 	React.useEffect(() => {
-		caretRef.current.style.animation = "none"
-		const id = setTimeout(() => {
-			caretRef.current.style.animation = ""
-		}, 250)
-		return () => {
-			clearTimeout(id)
+		const open = state.document.range.start !== state.document.range.end
+		if (!open) {
+			caretRef.current.style.animation = "none"
+			const id = setTimeout(() => {
+				caretRef.current.style.animation = ""
+			}, 250)
+			return () => {
+				clearTimeout(id)
+			}
+		} else {
+			caretRef.current.style.animation = "none"
 		}
-	}, [state.document.range.start])
+	}, [state.document.range.start, state.document.range.end])
 
 	React.useLayoutEffect(() => {
 		const handler = e => {
@@ -282,6 +288,9 @@ export default function App() {
 								<AbsoluteCaret
 									ref={caretRef}
 									left={state.document.range.__computed.end}
+									backgroundColor={
+										!state.document.activeElement ? "var(--inactive-caret-color)" : "var(--caret-color)"
+									}
 								/>
 							{/* )} */}
 
