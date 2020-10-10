@@ -186,11 +186,7 @@ export default function App() {
 								start = state.content.length
 								end = state.content.length
 							}
-							dispatch.pointerMove({
-								direction,
-								start,
-								end,
-							})
+							dispatch.pointerMove({ direction, start, end })
 						}}
 						onPointerDown={e => {
 							const caretRange = document.caretRangeFromPoint(e.clientX, e.clientY)
@@ -207,11 +203,7 @@ export default function App() {
 								start = state.content.length
 								end = state.content.length
 							}
-							dispatch.pointerDown({
-								direction,
-								start,
-								end,
-							})
+							dispatch.pointerDown({ direction, start, end })
 						}}
 						onPointerUp={e => {
 							dispatch.pointerUp()
@@ -242,10 +234,7 @@ export default function App() {
 										dispatch.reduceArrowToLeft()
 									}
 								}
-							}
-
-							// TODO: Add boundary.
-							if (e.key === "ArrowRight") {
+							} else if (e.key === "ArrowRight") {
 								if (!e.shiftKey) {
 									dispatch.moveArrowRight()
 								} else {
