@@ -3,7 +3,7 @@ import "variables.css"
 import { Absolute, Relative } from "position"
 import { Antialiased, Unantialiased } from "Antialiasing"
 import React, { useCallback, useLayoutEffect, useRef } from "react"
-import styled, { keyframes } from "styled-components"
+import styled, { css, keyframes } from "styled-components"
 
 import rem from "rem"
 import useEditor from "useEditor"
@@ -60,7 +60,12 @@ const AbsoluteCaret = styled.span`
 	width: ${rem(2)};
 	background-color: ${props => props.backgroundColor};
 	border-radius: 9999px;
-	animation: ${blink} 1s cubic-bezier(0, 0.75, 0, 0.75) infinite;
+	animation: ${props =>
+		!props.preventAnimation
+			? css`
+					${blink} 1s cubic-bezier(0, 0.75, 0, 0.75) infinite
+			  `
+			: "none"};
 	z-index: 20;
 	pointer-events: none;
 	user-select: none;
@@ -291,6 +296,7 @@ export default function App() {
 									backgroundColor={
 										!state.document.activeElement ? "var(--inactive-caret-color)" : "var(--caret-color)"
 									}
+									preventAnimation
 								/>
 							{/* )} */}
 
