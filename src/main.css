@@ -5,9 +5,9 @@ html {
 	--inactive-caret-color: transparent;
 }
 
-.disable-native-selection::-moz-selection {
+.transparent-selection::-moz-selection {
 	background-color: transparent;
 }
-.disable-native-selection::selection {
+.transparent-selection::selection {
 	background-color: transparent;
 }

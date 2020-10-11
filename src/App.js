@@ -1,4 +1,4 @@
-import "variables.css"
+import "main.css"
 
 import { Absolute, Relative } from "position"
 import { Antialiased, Unantialiased } from "Antialiasing"
@@ -235,6 +235,7 @@ export default function App() {
 								dispatch.selectAll()
 							}
 						}}
+						onDragStart={e => e.preventDefault()}
 						tabIndex={0}
 					>
 						{/**/}
@@ -254,14 +255,9 @@ export default function App() {
 								/>
 							)}
 
-							<Absolute
-								className="disable-native-selection"
-								style={{
-									zIndex: 10,
-									// WebkitUserSelect: "none",
-									// userSelect: "none",
-								}}
-							>
+							{/* WebkitUserSelect: "none",
+							userSelect: "none", */}
+							<Absolute className="transparent-selection" style={{ top: 0, right: 0, bottom: 0, left: 0, zIndex: 10 }}>
 								{state.content}
 							</Absolute>
 
